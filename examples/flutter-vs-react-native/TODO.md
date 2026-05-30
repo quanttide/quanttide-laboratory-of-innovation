@@ -6,14 +6,14 @@
 
 | ID | 任务 | 优先级 | 预估工时 | 实际耗时 | 负责人 | 依赖 |
 |----|------|:------:|:--------:|:--------:|:------:|------|
-| M1-1 | 调研 IDL 方案（Protobuf / JSON Schema / 自建），评估 Dart→JS 双向代码生成可行性 | P1 | 2h | ⏳ | | — |
-| M1-2 | 调研"双向集成"参考实现路线：Dart package → `pkg:ffigen` / 手动适配导出 TS 类型 | P1 | 2h | ⏳ | | — |
-| M1-3 | 选定 IDL + 集成路线，输出技术方案 | P1 | 1h | ⏳ | | M1-1, M1-2 |
-| M1-4 | 定义示例业务模型（含序列化、校验、仓储接口） | P1 | 4h | ⏳ | | M1-3 |
-| M1-5 | 搭建 Flutter 端集成 demo，验证调用纯逻辑模型 | P1 | 3h | ⏳ | | M1-4 |
-| M1-6 | 搭建 RN 端集成 demo，验证调用同一模型 | P1 | 3h | ⏳ | | M1-4 |
-| M1-7 | 记录双向集成耗时、坑点、兼容性问题 | P1 | 1h | ⏳ | | M1-5, M1-6 |
-| M1-8 | 撰写 PoC #1 结论，更新 README | P1 | 1h | ⏳ | | M1-7 |
+| M1-1 | 调研 IDL 方案（Protobuf / JSON Schema / 自建），评估 Dart→JS 双向代码生成可行性 | P1 | 2h | 0.5h | AI | — |
+| M1-2 | 调研"双向集成"参考实现路线：Dart package → 导出 TS 类型 | P1 | 2h | 0.5h | AI | — |
+| M1-3 | 选定 IDL + 集成路线，输出技术方案（→ OpenAPI 3.x + OpenAPI Generator） | P1 | 1h | 0.5h | AI | M1-1, M1-2 |
+| M1-4 | 定义示例业务模型（含序列化、校验、仓储接口） | P1 | 4h | 1h | AI | M1-3 |
+| M1-5 | 调用 OpenAPI Generator 生成 Dart 代码（→ generated/flutter_client） | P1 | 3h | 0.5h | AI | M1-4 |
+| M1-6 | 调用 OpenAPI Generator 生成 TypeScript 代码（→ generated/ts_client） | P1 | 3h | 0.5h | AI | M1-4 |
+| M1-7 | 验证双端代码编译通过：Dart analyze ✅ / TS tsc ✅ | P1 | 1h | 0.5h | AI | M1-5, M1-6 |
+| M1-8 | 撰写 PoC #1 结论，更新 README | P1 | 1h | 0.5h | AI | M1-7 |
 
 **目标产出：** 确认数据模型层能否以纯逻辑库形式独立，同时对 Flutter 和 RN 无倾向性影响。
 
