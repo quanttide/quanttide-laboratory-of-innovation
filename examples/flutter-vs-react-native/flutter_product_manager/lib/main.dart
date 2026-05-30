@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uuid/uuid.dart';
 
 void main() {
-  runApp(const ProviderScope(child: ProductManagerApp()));
+  runApp(const ProductManagerApp());
 }
 
 class ProductManagerApp extends StatelessWidget {
@@ -18,7 +18,10 @@ class ProductManagerApp extends StatelessWidget {
         colorSchemeSeed: Colors.blue,
         useMaterial3: true,
       ),
-      home: const ProductPage(),
+      home: BlocProvider(
+        create: (_) => ProductBloc()..add(LoadProducts()),
+        child: const ProductPage(),
+      ),
     );
   }
 }
@@ -51,79 +54,83 @@ class Product {
   });
 }
 
-// ---------- State ----------
+// ---------- BLoC ----------
+
+sealed class ProductEvent {}
+
+final class LoadProducts extends ProductEvent {}
+
+final class AddProduct extends ProductEvent {
+  final String name;
+  final double price;
+  final ProductCategory category;
+  final String description;
+  AddProduct({
+    required this.name,
+    required this.price,
+    required this.category,
+    this.description = '',
+  });
+}
+
+final class DeleteProduct extends ProductEvent {
+  final String id;
+  DeleteProduct(this.id);
+}
 
 class ProductState {
   final List<Product> products;
   final bool isLoading;
-  final String? error;
 
-  ProductState({
-    this.products = const [],
-    this.isLoading = false,
-    this.error,
-  });
+  ProductState({this.products = const [], this.isLoading = false});
 
-  ProductState copyWith({
-    List<Product>? products,
-    bool? isLoading,
-    String? error,
-  }) {
+  ProductState copyWith({List<Product>? products, bool? isLoading}) {
     return ProductState(
       products: products ?? this.products,
       isLoading: isLoading ?? this.isLoading,
-      error: error,
     );
   }
 }
 
-class ProductNotifier extends Notifier<ProductState> {
-  @override
-  ProductState build() {
-    _loadProducts();
-    return ProductState(isLoading: true);
+class ProductBloc extends Bloc<ProductEvent, ProductState> {
+  ProductBloc() : super(ProductState()) {
+    on<LoadProducts>(_onLoadProducts);
+    on<AddProduct>(_onAddProduct);
+    on<DeleteProduct>(_onDeleteProduct);
   }
 
-  Future<void> _loadProducts() async {
+  Future<void> _onLoadProducts(LoadProducts event, Emitter<ProductState> emit) async {
+    emit(state.copyWith(isLoading: true));
     await Future.delayed(const Duration(milliseconds: 500));
-    state = state.copyWith(isLoading: false, error: null);
+    emit(state.copyWith(isLoading: false));
   }
 
-  Future<void> addProduct({
-    required String name,
-    required double price,
-    required ProductCategory category,
-    String description = '',
-  }) async {
+  Future<void> _onAddProduct(AddProduct event, Emitter<ProductState> emit) async {
     await Future.delayed(const Duration(milliseconds: 200));
     final product = Product(
       id: const Uuid().v4(),
-      name: name,
-      price: price,
-      category: category,
-      description: description,
+      name: event.name,
+      price: event.price,
+      category: event.category,
+      description: event.description,
     );
-    state = state.copyWith(products: [...state.products, product], error: null);
+    emit(state.copyWith(products: [...state.products, product]));
   }
 
-  void deleteProduct(String id) {
-    state = state.copyWith(
-      products: state.products.where((p) => p.id != id).toList(),
-    );
+  void _onDeleteProduct(DeleteProduct event, Emitter<ProductState> emit) {
+    emit(state.copyWith(
+      products: state.products.where((p) => p.id != event.id).toList(),
+    ));
   }
 }
 
-final productProvider = NotifierProvider<ProductNotifier, ProductState>(
-  ProductNotifier.new,
-);
-
 // ---------- UI ----------
 
-class ProductPage extends ConsumerWidget {
+class ProductPage extends StatelessWidget {
   const ProductPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('产品管理')),
       body: const Column(
@@ -136,14 +143,14 @@ class ProductPage extends ConsumerWidget {
   }
 }
 
-class ProductForm extends ConsumerStatefulWidget {
+class ProductForm extends StatefulWidget {
   const ProductForm({super.key});
 
   @override
-  ConsumerState<ProductForm> createState() => _ProductFormState();
+  State<ProductForm> createState() => _ProductFormState();
 }
 
-class _ProductFormState extends ConsumerState<ProductForm> {
+class _ProductFormState extends State<ProductForm> {
   final _formKey = GlobalKey<FormState>();
   final _nameCtrl = TextEditingController();
   final _priceCtrl = TextEditingController();
@@ -160,12 +167,12 @@ class _ProductFormState extends ConsumerState<ProductForm> {
 
   void _submit() {
     if (!_formKey.currentState!.validate()) return;
-    ref.read(productProvider.notifier).addProduct(
+    context.read<ProductBloc>().add(AddProduct(
           name: _nameCtrl.text.trim(),
           price: double.parse(_priceCtrl.text),
           category: _category,
           description: _descCtrl.text.trim(),
-        );
+        ));
     _nameCtrl.clear();
     _priceCtrl.clear();
     _descCtrl.clear();
@@ -203,7 +210,7 @@ class _ProductFormState extends ConsumerState<ProductForm> {
               },
             ),
             DropdownButtonFormField<ProductCategory>(
-              initialValue: _category,
+              value: _category,
               decoration: const InputDecoration(labelText: '分类'),
               items: ProductCategory.values
                   .map((c) => DropdownMenuItem(
@@ -231,55 +238,58 @@ class _ProductFormState extends ConsumerState<ProductForm> {
   }
 }
 
-class ProductList extends ConsumerWidget {
+class ProductList extends StatelessWidget {
   const ProductList({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(productProvider);
+  Widget build(BuildContext context) {
+    return BlocBuilder<ProductBloc, ProductState>(
+      builder: (context, state) {
+        if (state.isLoading) {
+          return const Center(child: CircularProgressIndicator());
+        }
 
-    if (state.isLoading) {
-      return const Center(child: CircularProgressIndicator());
-    }
+        if (state.products.isEmpty) {
+          return const Center(child: Text('暂无产品'));
+        }
 
-    if (state.products.isEmpty) {
-      return const Center(child: Text('暂无产品'));
-    }
-
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child:
-                Text('产品列表', style: Theme.of(context).textTheme.titleMedium),
-          ),
-        ),
-        Expanded(
-          child: ListView.builder(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            itemCount: state.products.length,
-            itemBuilder: (context, index) {
-              final product = state.products[index];
-              return ListTile(
-                title: Text(product.name),
-                subtitle: Text(
-                    '¥${product.price.toStringAsFixed(2)}  |  ${categoryLabels[product.category]}'),
-                trailing: IconButton(
-                  icon: const Icon(Icons.delete_outline),
-                  onPressed: () =>
-                      ref.read(productProvider.notifier).deleteProduct(product.id),
-                ),
-              );
-            },
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(8),
-          child: Text('共 ${state.products.length} 项'),
-        ),
-      ],
+        return Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text('产品列表',
+                    style: Theme.of(context).textTheme.titleMedium),
+              ),
+            ),
+            Expanded(
+              child: ListView.builder(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                itemCount: state.products.length,
+                itemBuilder: (context, index) {
+                  final product = state.products[index];
+                  return ListTile(
+                    title: Text(product.name),
+                    subtitle: Text(
+                        '¥${product.price.toStringAsFixed(2)}  |  ${categoryLabels[product.category]}'),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.delete_outline),
+                      onPressed: () => context
+                          .read<ProductBloc>()
+                          .add(DeleteProduct(product.id)),
+                    ),
+                  );
+                },
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8),
+              child: Text('共 ${state.products.length} 项'),
+            ),
+          ],
+        );
+      },
     );
   }
 }

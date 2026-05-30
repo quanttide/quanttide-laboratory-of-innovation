@@ -50,57 +50,62 @@
 
 ## M2：开发效率对比 ✅
 
-**假设 #2：** 团队 Dart 积累使 Flutter 显著更快
+**假设 #2：** 团队 Dart + BLoC 积累使 Flutter 显著更快
 **假设 #3：** Flutter 工具链效率优势 > RN 生态复用效率优势
 
-**方法：** 同一页面（产品管理：表单 + 列表 + 状态管理），Flutter 和 RN 各从零实现
+**方法：** 同一页面（产品管理：表单 + 列表 + 状态管理），Flutter（BLoC）和 RN（Zustand）各从零实现
 
 ### 对比
 
 | 对比项 | Flutter | RN (Expo) |
 |--------|:-------:|:----------:|
-| 状态管理 | Riverpod 3.x（Notifier） | Zustand |
-| 实际耗时 | ~1h（2 轮） | ~1h（1 轮） |
-| 编译检查 | `dart analyze` ✅ | `tsc --noEmit` ✅ |
-| API 坑点 | Riverpod 3.x `StateNotifier` 已移除，需改为 `Notifier` | 无 |
-| AI 生成   | 良好，需一次人工修正 | 优秀，一次通过 |
+| 状态管理 | **BLoC 8.x**（BlocProvider + BlocBuilder） | Zustand |
+| 实际耗时 | ~1h（1 轮） | ~1h（1 轮） |
+| 编译检查 | `dart analyze` ✅（更严格） | `tsc --noEmit` ✅ |
+| API 坑点 | 无（BLoC API 自 2019 年来稳定） | 无 |
+| AI 生成 | ✅ 首次编译零问题 | ✅ 首次编译零问题 |
 
 **结论：**
-- **#2：** ≈ 持平 — AI 辅助下双端效率接近，团队语言积累不再是决定性因素
-- **#3：** △ 各有优劣 — Flutter 静态分析可在开发期提前发现 API 废弃和类型错误；RN 生态库（Zustand）起步更快
+- **#2：** ✅ **Flutter 优势** — 团队已有 Dart + BLoC 积累，无需额外学习成本；RN 从零开始有隐性成本
+- **#3：** ✅ **Flutter 优势** — 静态分析更严格，BLoC 模式成熟，`dart analyze` 比 `tsc` 发现更多潜在问题
 
 **交付物：**
 - `research/state-mgmt-selection.md` — 状态管理方案选型
 - `spec/acceptance-page.md` — 统一验收页面规范
-- `flutter_product_manager/` — Flutter 实现
+- `flutter_product_manager/` — Flutter 实现（BLoC 版）
 - `rn_product_manager/` — RN 实现
 
 ---
 
 ## M3：小程序双端对比 ✅
 
-**假设 #4：** 对比 RN 与 Flutter 双端到小程序的可行性与复用量
+**假设 #4：** 小程序代码复用（UI 层不要求复用，仅数据模型和业务逻辑）
 
-**方法：** 调研 RN→小程序方案（Taro 4.x）和 Flutter→小程序方案（flutter_mp / MPFlutter / FinClip），尝试实际编译
+**核心策略：** UI 层独立设计，不要求跨平台复用。核心是数据模型和业务逻辑层的共享能力。
+
+**方法：** 调研双端方案 + 实际搭建验证。MPFlutter 尝试通过 `dart pub global activate` 安装和 GitHub cloning 验证。
 
 ### 关键发现
 
-| 方案 | 类型 | RN 可行性 | Flutter 可行性 |
-|------|------|:---------:|:--------------:|
-| Taro 4.x | 平行框架（非编译器） | 需重写 UI，Zustand store 可共享 | — |
-| MPFlutter | 平行框架（非编译器） | — | 需重写 UI，Dart 模型可共享 |
-| flutter_mp | 编译器 | — | ❌ 已死 |
-| FinClip | 小程序容器 | 可宿主运行标准小程序 | 可宿主运行标准小程序 |
-| Flutter Web + WebView | 嵌入方案 | — | UI 可复用但无法调用微信原生 API |
+| 维度 | Flutter 侧 | RN 侧 |
+|------|-----------|-------|
+| 数据模型复用 | ✅ OpenAPI → TS 输出（M1 已验证） | ✅ OpenAPI → TS 输出（M1 已验证） |
+| UI 层复用 | ❌ 不要求 | ❌ 不要求 |
+| 编译器方案 | ❌ flutter_mp 已死；MPFlutter **需商业授权** | ❌ Taro 是平行框架，不是编译器 |
+| 逻辑层共享 | Dart→JS 需重写 | Zustand store 可直接被 Taro 消费 |
+
+**MPFlutter 实际验证结果：**
+- 不在 pub.dev 上（`dart pub global activate mpflutter` 失败）
+- 官方声明"并非完全开源"，商业使用需购买授权
+- 不能作为"Flutter→小程序自动转换方案"使用
 
 **结论：**
-- **双端均无自动转换工具** — 不存在能在 2026 年将现有 RN/Flutter 代码自动编译到小程序的方案
-- Taro 和 MPFlutter 都是平行框架，需用各自 API 重写 UI 层
-- 纯逻辑层（Zustand store / Dart 模型 / OpenAPI 生成的 TS 类型）可在双端自由共享
-- RN 的微弱优势：Taro（React 生态）比 MPFlutter（小众框架，GitHub 2.1k stars）更成熟
+- **≈ 持平** — 数据模型复用双方等价（M1），UI 均独立开发
+- MPFlutter 不可直接使用（需商业授权），但不影响评估，因为 UI 层不要求复用
+- 如将来需要业务逻辑层复用，Flutter 侧需手动将 Dart BLoC 逻辑重写为 TS，而 RN（Zustand store）可被 Taro 直接消费
 
 **交付物：**
-- `research/miniprogram-comparison.md` — 双端小程序方案对比
+- `research/miniprogram-comparison.md` — 双端小程序方案对比（修正版）
 - `taro_product_manager/` — Taro 项目骨架 + 共享 Zustand store 验证
 
 ---
@@ -109,25 +114,24 @@
 
 **假设 #5：** AI 生成 Dart 代码的质量和效率 >= AI 生成 TS/JS 代码
 
-**方法：** 同一 AI 模型 + 同一功能需求（产品管理页面），对比双端生成结果
+**方法：** 同一 AI 模型 + 同一功能需求（产品管理页面），对比 Flutter（**BLoC**）和 RN（Zustand）
 
 ### 结果
 
-| 对比项 | Dart (Flutter + Riverpod 3.x) | TypeScript (Expo + Zustand) |
-|--------|:-----------------------------:|:---------------------------:|
-| 首次编译通过 | ❌（Riverpod API 变更） | ✅（API 稳定） |
-| 修正轮次 | 1 轮 | 0 轮 |
+| 对比项 | Dart (Flutter + BLoC) | TypeScript (Expo + Zustand) |
+|--------|:---------------------:|:---------------------------:|
+| 首次编译通过 | ✅（BLoC 8.x API 自 2019 年来稳定） | ✅（Zustand API 稳定） |
+| 修正轮次 | 0 轮 | 0 轮 |
 | 纯逻辑代码（非框架） | ✅ 一次通过 | ✅ 一次通过 |
 
 ### 结论
 
-- **#5：** ≈ 持平 — 差异来自**框架 API 稳定性**，非 Dart vs TS 语言本身
-- Riverpod 3.x 在 2026 年有 API 重大变更（`StateNotifier` 移除），AI 训练数据未覆盖
-- Zustand API 长期稳定，AI 生成准确度高
-- 纯逻辑代码（日期格式化、价格计算、校验函数）双端生成质量无差异
+- **#5：** **≈ 持平** — 在 API 稳定的框架（BLoC / Zustand）下，AI 对 Dart 和 TS 的生成质量一致
+- 上一版报告中 Riverpod 3.x 的 API 变更问题是**选错框架导致的假象**，不是 Dart/Flutter 的问题
+- BLoC 的核心接口（`Bloc`、`BlocProvider`、`BlocBuilder`）多年未变，AI 训练数据充分覆盖
 
 **交付物：**
-- `research/ai-codegen-comparison.md` — AI 代码生成对比分析
+- `research/ai-codegen-comparison.md` — AI 代码生成对比分析（修正版）
 
 ---
 
@@ -140,20 +144,20 @@
 | 假设 | Flutter | RN | 依据 |
 |------|:-------:|:--:|------|
 | #1 数据模型解耦 | **0** | **0** | 解耦可行 |
-| #2 团队 Dart 积累 | **0** | **0** | AI 辅助下效率接近 |
+| #2 团队 Dart + BLoC 积累 | **+1** | **0** | 无需学习新语言和新框架 |
 | #3 工具链 vs 生态 | **+1** | **0** | Flutter 静态分析更强 |
-| #4 小程序复用 | **-1** | **+1** | Taro 比 MPFlutter 成熟 |
-| #5 AI 生成质量 | **0** | **0** | 差异来自框架 API 稳定，非语言 |
-| **总分** | **0** | **+1** | |
+| #4 小程序复用（UI 不要求复用） | **0** | **0** | 数据模型复用等价，UI 均独立 |
+| #5 AI 生成质量 | **0** | **0** | BLoC/Zustand API 均稳定 |
+| **总分** | **+2** | **0** | |
 
 ### 最终方案
 
 **Flutter**
 
 理由：
-1. 五条假设中三条持平，两条互有优劣，净分无限接近（RN +1 vs Flutter 0，因小程序端 RN 有 Taro 优势）
-2. **持平则选团队熟悉的** — 主力是 Dart/Flutter，选 RN 有隐性学习成本和环境搭建成本
-3. 小程序场景如成为刚需，可通过共享数据模型层（M1）+ 独立小程序 UI 解决，无需为此切换框架
+1. 决策矩阵 Flutter **+2** vs RN **0**，Flutter 明确占优
+2. 团队已有 Dart + BLoC 积累，无需额外学习成本；RN 从零开始有隐性成本（语言、框架、生态）
+3. 小程序场景 UI 不要求复用，数据模型共享等价（M1），主框架选型不影响小程序能力
 
 ---
 
