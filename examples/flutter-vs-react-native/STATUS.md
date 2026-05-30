@@ -1,0 +1,87 @@
+# 实验状态
+
+> 最后更新：2026-05-30
+
+## 总体进度
+
+| 里程碑 | 状态 | 备注 |
+|--------|:----:|------|
+| M1 数据模型解耦验证 | ✅ 完成 | OpenAPI 3.x + OpenAPI Generator |
+| M2 开发效率对比 | ✅ 完成 | Flutter Riverpod vs RN Expo+Zustand |
+| M3 小程序双端对比 | ⏳ 待执行 | |
+| M4 AI 代码质量对比 | ⏳ 待执行 | |
+| M5 综合决策 | ⏳ 待执行 | |
+
+---
+
+## 决策矩阵
+
+| 假设 | Flutter | RN | 依据 |
+|------|:-------:|:--:|------|
+| #1 数据模型解耦 | **0** | **0** | 解耦可行，不偏袒任何一方 |
+| #2 团队 Dart 积累优势 | **0** | **0** | AI 辅助下双端效率接近 |
+| #3 工具链 vs 生态复用 | **+1** | **0** | Flutter 静态分析可提前发现更多问题 |
+| #4 小程序复用 | ⏳ | ⏳ | |
+| #5 AI 生成 Dart vs TS | ⏳ | ⏳ | |
+| **当前总分** | **+1** | **0** | |
+
+---
+
+## M1：数据模型解耦验证 ✅
+
+**假设 #1：** 数据模型层可独立为纯逻辑库，与 Flutter / RN 均解耦
+
+**方法：** 调研 5 种 IDL 方案 → 选定 **OpenAPI 3.x + OpenAPI Generator** → 定义 11 个业务 Schema（User / Product / Order / Address 等）→ 生成 Dart + TS 双端代码
+
+**结果：**
+- Dart client（1618 LOC）：`dart analyze` 零问题
+- TS client（12 个 model 文件）：`tsc --noEmit` 零问题
+- 支持 required / pattern / enum / nested / array 等约束
+
+**结论：** ✅ 数据模型层可以纯 IDL 形式独立，对框架选型无倾向性
+
+**交付物：**
+- `research/idl-selection.md` — IDL 方案调研与选型
+- `spec/openapi.yaml` — 示例模型定义
+- `generated/flutter_client/` — 生成 Dart 代码
+- `generated/ts_client/` — 生成 TypeScript 代码
+
+---
+
+## M2：开发效率对比 ✅
+
+**假设 #2：** 团队 Dart 积累使 Flutter 显著更快
+**假设 #3：** Flutter 工具链效率优势 > RN 生态复用效率优势
+
+**方法：** 同一页面（产品管理：表单 + 列表 + 状态管理），Flutter 和 RN 各从零实现
+
+### 对比
+
+| 对比项 | Flutter | RN (Expo) |
+|--------|:-------:|:----------:|
+| 状态管理 | Riverpod 3.x（Notifier） | Zustand |
+| 实际耗时 | ~1h（2 轮） | ~1h（1 轮） |
+| 编译检查 | `dart analyze` ✅ | `tsc --noEmit` ✅ |
+| API 坑点 | Riverpod 3.x `StateNotifier` 已移除，需改为 `Notifier` | 无 |
+| AI 生成   | 良好，需一次人工修正 | 优秀，一次通过 |
+
+**结论：**
+- **#2：** ≈ 持平 — AI 辅助下双端效率接近，团队语言积累不再是决定性因素
+- **#3：** △ 各有优劣 — Flutter 静态分析可在开发期提前发现 API 废弃和类型错误；RN 生态库（Zustand）起步更快
+
+**交付物：**
+- `research/state-mgmt-selection.md` — 状态管理方案选型
+- `spec/acceptance-page.md` — 统一验收页面规范
+- `flutter_product_manager/` — Flutter 实现
+- `rn_product_manager/` — RN 实现
+
+---
+
+## 实际耗时 vs 估算
+
+| 里程碑 | 估算 | 实际 | 偏差 |
+|--------|:----:|:----:|:----:|
+| M1 数据模型解耦 | 17h | 3.5h | -79% |
+| M2 开发效率对比 | 17h | 3.5h | -79% |
+
+> 实际大幅低于估算，主要原因：AI 辅助大幅加速了调研、编码和验证环节。
