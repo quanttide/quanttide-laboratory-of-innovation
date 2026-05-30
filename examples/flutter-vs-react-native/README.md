@@ -21,7 +21,7 @@
 |   |------|------|------|
 | 1 | 数据模型层可独立为纯逻辑库，与 Flutter / RN 均解耦，不影响选型 | ✅ 假设成立 — OpenAPI 3.x 定义 + OpenAPI Generator 生成 | ✅ 已验证 |
 | 2 | 团队 Dart + BLoC 积累使 Flutter 初始开发效率显著高于 RN（学习成本更低） | ✅ 成立 — BLoC API 稳定，AI 生成质量高，团队无需额外学习曲线 | ✅ 已验证 |
-| 3 | Flutter 原生工具链（热重载、DevTools、代码生成）效率优势 > RN 生态库复用效率优势 | ✅ 成立 — Flutter 静态分析更严格（`dart analyze` 比 `tsc` 发现更多潜在问题，如 Riverpod 3.x 的 `StateNotifier` 废弃警告在 `tsc` 下无对应检查） | ✅ 已验证 |
+| 3 | Flutter 原生工具链（热重载、DevTools、代码生成）效率优势 > RN 生态库复用效率优势 | ✅ 成立 — Flutter 静态分析更严格（`dart analyze` 可检测废弃 API、类型安全、未使用变量等，`tsc` 默认配置下覆盖范围更窄） | ✅ 已验证 |
 | 4 | 小程序代码复用：对比双端可行性（UI 层不要求复用，仅数据模型） | **0** — 双方数据模型复用等价（M1），UI 均独立开发 | ✅ 已验证 |
 | 5 | AI 生成 Dart 代码的质量和效率 >= AI 生成 TS/JS 代码 | ≈ 持平 — 在 API 稳定的 BLoC/Zustand 下，双端生成质量一致 | ✅ 已验证 |
 
