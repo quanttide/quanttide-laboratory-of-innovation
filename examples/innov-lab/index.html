@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>创新实验室</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;background:#f1f5f9;color:#1e293b;font-size:14px;line-height:1.5}
+header{background:#1e40af;color:#fff;padding:14px 24px;display:flex;align-items:center;justify-content:space-between}
+header h1{font-size:18px;font-weight:600}
+header .sub{font-size:13px;opacity:.7}
+nav{background:#fff;border-bottom:1px solid #e2e8f0;display:flex;padding:0 24px}
+nav button{padding:10px 20px;border:none;background:none;font-size:14px;font-weight:500;color:#64748b;cursor:pointer;border-bottom:2px solid transparent}
+nav button.active{color:#1e40af;border-bottom-color:#1e40af}
+.stats-bar{background:#e0e7ff;padding:10px 24px;font-size:13px;color:#1e40af;display:flex;gap:24px;flex-wrap:wrap}
+.page{padding:20px 24px;display:none}
+.page.active{display:block}
+.filters{display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.filters select,.filters input{padding:6px 10px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px;font-family:inherit}
+.filters input{flex:1;min-width:200px;max-width:360px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.card{border:1px solid #e2e8f0;border-radius:10px;background:#fff;overflow:hidden;transition:box-shadow .15s}
+.card:hover{box-shadow:0 4px 12px rgba(0,0,0,.08)}
+.card-head{padding:14px 16px 8px;display:flex;justify-content:space-between;align-items:flex-start}
+.card-name{font-size:15px;font-weight:600}
+.card-desc{font-size:13px;color:#64748b;padding:0 16px 8px}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:500;color:#fff}
+.badge-active{background:#22c55e}.badge-archived{background:#94a3b8}.badge-deprecated{background:#ef4444}
+.badge-domain{background:#e0e7ff;color:#1e40af;font-size:11px;border-radius:4px;margin-left:6px}
+.poc-list{padding:0 16px 10px;display:flex;flex-wrap:wrap;gap:3px}
+.poc-tag{display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:4px;font-size:12px;background:#f8fafc;border:1px solid #e2e8f0}
+.poc-tag.done{background:#dcfce7;border-color:#bbf7d0;color:#166534}
+.card-foot{padding:8px 16px;background:#f8fafc;border-top:1px solid #e2e8f0;font-size:12px;display:flex;justify-content:space-between;align-items:center}
+.card-foot a{color:#3b82f6;text-decoration:none}
+.explore-btn{padding:4px 12px;border:1px solid #3b82f6;border-radius:4px;background:transparent;color:#3b82f6;font-size:12px;cursor:pointer}
+.explore-btn:hover{background:#eff6ff}
+.flow{display:flex;gap:20px;align-items:flex-start}
+.flow-side{width:320px;flex-shrink:0}
+.flow-main{flex:1}
+.eval-table{width:100%;border-collapse:collapse;margin-bottom:12px}
+.eval-table th{text-align:left;font-size:12px;font-weight:600;color:#64748b;padding:6px 8px;border-bottom:1px solid #e2e8f0}
+.eval-table td{padding:8px;border-bottom:1px solid #e2e8f0;font-size:13px}
+.slider-cell{display:flex;align-items:center;gap:8px}
+.slider-cell input[type=range]{flex:1;height:4px;-webkit-appearance:none;background:#e2e8f0;border-radius:2px}
+.slider-cell input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:#3b82f6;cursor:pointer;border:2px solid #fff}
+.slider-value{font-size:14px;font-weight:600;color:#3b82f6;min-width:20px;text-align:center}
+.weight-input{width:52px;text-align:center;padding:4px;border:1px solid #e2e8f0;border-radius:4px;font-size:12px}
+.conclusion-group{display:flex;gap:10px;margin:12px 0}
+.conclusion-group label{display:flex;align-items:center;gap:4px;padding:6px 14px;border:1px solid #e2e8f0;border-radius:6px;cursor:pointer;font-size:13px}
+.conclusion-group label:has(input:checked){border-color:#3b82f6;background:#eff6ff}
+.total-score{font-size:28px;font-weight:700;color:#1e40af;text-align:center;padding:4px 0}
+.history{list-style:none}
+.history li{padding:6px 0;border-bottom:1px solid #f1f5f9;font-size:13px;display:flex;gap:8px}
+.history .time{color:#94a3b8;font-size:11px;min-width:50px}
+.btn{padding:8px 16px;border:none;border-radius:6px;font-size:13px;cursor:pointer;font-weight:500}
+.btn-primary{background:#3b82f6;color:#fff}
+.btn-secondary{background:#f1f5f9;color:#475569;border:1px solid #e2e8f0}
+.flow-side .form-group{margin-bottom:10px}
+.flow-side label{display:block;font-size:12px;font-weight:500;color:#64748b;margin-bottom:3px}
+.flow-side input,.flow-side textarea,.flow-side select{width:100%;padding:6px 8px;border:1px solid #e2e8f0;border-radius:4px;font-size:13px;font-family:inherit}
+.flow-side textarea{resize:vertical;min-height:50px}
+.ai-section{margin-top:12px}
+.empty-state{text-align:center;padding:60px 24px;color:#94a3b8;grid-column:1/-1}
+</style>
+</head>
+<body>
+<header>
+  <h1>创新实验室</h1>
+  <div class="sub">目录 · 探索 · 决策</div>
+</header>
+<nav id="nav">
+  <button class="active" data-view="directory">实验室目录</button>
+  <button data-view="explore">探索工作台</button>
+</nav>
+<div class="page active" id="view-directory"></div>
+<div class="page" id="view-explore"></div>
+<script>
+const LABS = [
+  {id:'human',name:'人力资源实验室',repo:'quanttide/quanttide-laboratory-of-human-resources',domain:'人力资源',status:'active',desc:'招聘筛选、人才管理',pocs:[{id:'p01',name:'招聘筛选网关',status:'done'}]},
+  {id:'org',name:'组织管理实验室',repo:'quanttide/quanttide-laboratory-of-organization',domain:'组织管理',status:'active',desc:'职能拆解、组织设计',pocs:[{id:'p03',name:'职能目录',status:'done'}]},
+  {id:'exec',name:'执行管理实验室',repo:'quanttide/quanttide-laboratory-of-execution',domain:'执行管理',status:'active',desc:'任务分诊、技术职能协作',pocs:[{id:'p04',name:'秘书处任务分诊',status:'done'},{id:'p05',name:'技术职能协作循环',status:'done'}]},
+  {id:'company',name:'业务实体实验室',repo:'quanttide/quanttide-laboratory-of-business-entity',domain:'业务实体',status:'active',desc:'章程管理、业务实体',pocs:[{id:'p06',name:'章程多维资产视图',status:'done'}]},
+  {id:'innov',name:'创新实验室',repo:'quanttide/quanttide-laboratory-of-innovation',domain:'创新',status:'active',desc:'概念验证方法论',pocs:[{id:'p07',name:'概念验证探索框架',status:'done'},{id:'p09',name:'实验室目录',status:'done'}]},
+  {id:'game',name:'游戏研发实验室',repo:'quanttide/quanttide-laboratory-of-game-developing',domain:'游戏',status:'active',desc:'回合制战棋开发',pocs:[{id:'g01',name:'六角格地图',status:'done'},{id:'g02',name:'单位移动',status:'done'},{id:'g03',name:'地形系统',status:'done'},{id:'g04',name:'回合流程',status:'done'}]},
+  {id:'default',name:'创始人实验室',repo:'quanttide/quanttide-example-of-founder',domain:'创始人',status:'active',desc:'跨领域基础设施',pocs:[]}
+];
+let selectedLab = null;
+let logs = JSON.parse(sessionStorage.getItem('innov_logs') || '[]');
+
+function renderDirectory() {
+  const el = document.getElementById('view-directory');
+  const t = LABS.length, a = LABS.filter(l=>l.status==='active').length, p = LABS.reduce((s,l)=>s+l.pocs.length,0);
+  el.innerHTML = `<div class="stats-bar"><span><strong>${t}</strong> 实验室</span><span><strong>${a}</strong> 活跃</span><span><strong>${p}</strong> PoC</span></div>
+  <div class="filters">
+    <select id="dir-domain"><option value="">全部领域</option>${[...new Set(LABS.map(l=>l.domain))].map(d=>`<option>${d}</option>`).join('')}</select>
+    <select id="dir-status"><option value="">全部状态</option><option value="active">活跃</option><option value="archived">已归档</option></select>
+    <input type="text" id="dir-search" placeholder="搜索...">
+  </div>
+  <div class="grid" id="dir-grid"></div>`;
+  document.getElementById('dir-domain').onchange=renderGrid;
+  document.getElementById('dir-status').onchange=renderGrid;
+  document.getElementById('dir-search').oninput=renderGrid;
+  renderGrid();
+}
+
+function renderGrid() {
+  const d = document.getElementById('dir-domain')?.value || '', s = document.getElementById('dir-status')?.value || '', q = (document.getElementById('dir-search')?.value || '').toLowerCase();
+  let f = LABS.filter(l => { if(d&&l.domain!==d)return false; if(s&&l.status!==s)return false; if(q){const m=l.name.toLowerCase().includes(q)||l.desc.toLowerCase().includes(q)||l.pocs.some(p=>p.name.toLowerCase().includes(q));if(!m)return false}return true });
+  const grid = document.getElementById('dir-grid');
+  if(!f.length){grid.innerHTML='<div class="empty-state">无匹配实验室</div>';return}
+  grid.innerHTML=f.map(l=>`<div class="card"><div class="card-head"><div><div class="card-name">${l.name}</div><span class="badge-domain">${l.domain}</span></div><span class="badge badge-${l.status}">${l.status==='active'?'活跃':'已归档'}</span></div><div class="card-desc">${l.desc}</div><div class="poc-list">${l.pocs.map(p=>`<span class="poc-tag ${p.status}">${p.status==='done'?'✓':'○'} ${p.name}</span>`).join('')}</div><div class="card-foot"><span>${l.pocs.length} PoC</span><a href="https://github.com/${l.repo}" target="_blank">${l.repo}</a><button class="explore-btn" onclick="switchView('explore','${l.id}')">探索</button></div></div>`).join('');
+}
+
+function switchView(view, labId) {
+  document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.view===view));
+  document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id==='view-'+view));
+  if(view==='explore')renderExplore(labId||LABS[0].id);
+}
+
+function renderExplore(labId) {
+  selectedLab = LABS.find(l=>l.id===labId)||LABS[0];
+  const el = document.getElementById('view-explore');
+  el.innerHTML = `<div class="stats-bar">探索：<strong>${selectedLab.name}</strong> — 提出假设 → 评估 → 决策</div>
+  <div class="flow">
+    <div class="flow-side">
+      <div class="form-group"><label>核心假设</label><input id="hypothesis" placeholder="例：用户愿意为 XX 付费"></div>
+      <div class="form-group"><label>验证方法</label><select id="method"><option value="实验">实验</option><option value="原型">原型</option><option value="调研">调研</option></select></div>
+      <div class="form-group"><label>输入条件</label><textarea id="input" rows="2" placeholder="所需资源"></textarea></div>
+      <div class="form-group"><label>预期输出</label><textarea id="output" rows="2" placeholder="交付物"></textarea></div>
+      <div class="ai-section"><button class="btn btn-primary btn-block" onclick="aiFill()" style="width:100%">AI 辅助生成</button></div>
+    </div>
+    <div class="flow-main">
+      <table class="eval-table"><thead><tr><th>维度</th><th>评分</th><th>权重</th><th>得分</th></tr></thead><tbody id="eval-body"></tbody></table>
+      <div class="total-score" id="totalScore">3.00</div>
+      <div style="text-align:center;font-size:11px;color:#94a3b8;margin-bottom:12px">综合评分 / 5</div>
+      <div class="conclusion-group"><label><input type="radio" name="conclusion" value="adopt"> 采纳</label><label><input type="radio" name="conclusion" value="adjust"> 调整</label><label><input type="radio" name="conclusion" value="abandon"> 放弃</label></div>
+      <textarea id="reason" rows="2" style="width:100%;padding:8px;border:1px solid #e2e8f0;border-radius:4px;font-size:13px;font-family:inherit;margin-bottom:10px" placeholder="决策理由"></textarea>
+      <button class="btn btn-primary" onclick="saveLog()">添加到探索记录</button>
+      <hr style="margin:16px 0;border:none;border-top:1px solid #e2e8f0">
+      <h3 style="font-size:14px;margin-bottom:8px;color:#64748b">探索记录</h3>
+      <ul class="history" id="explore-log"></ul>
+    </div>
+  </div>`;
+  ['可行性','成本','风险','收益'].forEach((name,i)=>{
+    const key=['feasibility','cost','risk','benefit'][i];
+    document.getElementById('eval-body').innerHTML+=`<tr><td>${name}</td><td><div class="slider-cell"><input type="range" min="1" max="5" value="3" class="eval-slider" data-dim="${key}"><span class="slider-value" id="${key}Val">3</span></div></td><td><input type="number" class="weight-input" value="25" min="0" max="100" data-dim="${key}"> %</td><td><span class="slider-value" id="${key}Score" style="font-size:13px">0.75</span></td></tr>`;
+  });
+  document.querySelectorAll('.eval-slider').forEach(el=>el.oninput=function(){document.getElementById(this.dataset.dim+'Val').textContent=this.value;updateScore(this.dataset.dim);updateTotal()});
+  document.querySelectorAll('.weight-input').forEach(el=>el.oninput=function(){updateScore(this.dataset.dim);updateTotal()});
+  renderHistory();
+  updateTotal();
+}
+
+function updateScore(dim){
+  const s=document.querySelector(`.eval-slider[data-dim="${dim}"]`),w=document.querySelector(`.weight-input[data-dim="${dim}"]`),se=document.getElementById(dim+'Score');
+  if(s&&w&&se)se.textContent=((parseFloat(s.value)/5)*(parseFloat(w.value||0)/100)).toFixed(2);
+}
+function updateTotal(){
+  let t=0;document.querySelectorAll('.weight-input').forEach(w=>{const s=document.querySelector(`.eval-slider[data-dim="${w.dataset.dim}"]`);if(s)t+=(parseFloat(s.value)/5)*(parseFloat(w.value||0)/100)});document.getElementById('totalScore').textContent=(t*5).toFixed(2);
+}
+function aiFill(){
+  document.getElementById('hypothesis').value='用户通过个性化推荐提升购买转化率';
+  document.getElementById('method').value='原型';
+  document.getElementById('input').value='目标用户画像、竞品分析';
+  document.getElementById('output').value='可交互原型、测试报告';
+}
+function saveLog(){
+  const h=document.getElementById('hypothesis').value.trim();if(!h)return;
+  const c=document.querySelector('input[name="conclusion"]:checked');
+  const now=new Date();const ts=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
+  logs.push({time:ts,lab:selectedLab.name,hypothesis:h,method:document.getElementById('method').value,conclusion:c?c.value:'',reason:document.getElementById('reason').value.trim()});
+  sessionStorage.setItem('innov_logs',JSON.stringify(logs));renderHistory();
+}
+function renderHistory(){
+  const el=document.getElementById('explore-log');if(!el)return;
+  const label={adopt:'采纳',adjust:'调整',abandon:'放弃'};
+  el.innerHTML=logs.length?logs.slice().reverse().map(l=>`<li><span class="time">${l.time}</span><span>${l.lab}</span><span>${l.hypothesis}</span>${l.conclusion?`<span style="color:#3b82f6">→ ${label[l.conclusion]||l.conclusion}</span>`:''}</li>`).join(''):'<li style="color:#94a3b8;border:none">暂无记录</li>';
+}
+document.querySelectorAll('#nav button').forEach(b=>b.onclick=()=>switchView(b.dataset.view));
+renderDirectory();
+</script>
+</body>
+</html>
