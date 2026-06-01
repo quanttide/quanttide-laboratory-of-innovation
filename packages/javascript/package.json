@@ -1,5 +1,5 @@
 {
-  "name": "@quanttide/innov-models",
+  "name": "quanttide-innov",
   "version": "0.0.1",
   "description": "Shared data models for innovation lab PoCs",
   "type": "module",
