@@ -1,4 +1,6 @@
-// PoC 数据模型
+// 实验室与探索数据模型
+
+// ---- PoC ----
 
 export class Poc {
   constructor({ id, name, status = 'pending' }) {
@@ -7,6 +9,8 @@ export class Poc {
     this.status = status; // 'done' | 'pending' | 'in_progress'
   }
 }
+
+// ---- Lab ----
 
 export class Lab {
   constructor({ id, name, repo, domain, status = 'active', description = '', pocs = [] }) {
@@ -22,6 +26,32 @@ export class Lab {
   get pocCount() { return this.pocs.length; }
   get doneCount() { return this.pocs.filter(p => p.status === 'done').length; }
 }
+
+// ---- Lab query ----
+
+export function queryLabs(source) {
+  return {
+    getAll: () => source,
+    get: (id) => source.find(l => l.id === id),
+    byDomain: (domain) => domain ? source.filter(l => l.domain === domain) : source,
+    byStatus: (status) => status ? source.filter(l => l.status === status) : source,
+    search: (query) => {
+      const q = query.toLowerCase();
+      return source.filter(l =>
+        l.name.toLowerCase().includes(q) ||
+        l.description.toLowerCase().includes(q) ||
+        l.pocs.some(p => p.name.toLowerCase().includes(q))
+      );
+    },
+    stats: () => ({
+      total: source.length,
+      active: source.filter(l => l.status === 'active').length,
+      totalPocs: source.reduce((s, l) => s + l.pocs.length, 0),
+    }),
+  };
+}
+
+// ---- Exploration ----
 
 export class ExplorationLog {
   constructor({ time, mode, hypothesis, method, conclusion, reason, scores = {} }) {
@@ -61,6 +91,8 @@ export class EvaluationCriteria {
     if (dim) dim.weight = weight;
   }
 }
+
+// ---- Constants ----
 
 export const LAB_STATUS_LABELS = {
   active: '活跃',

@@ -1,6 +1,6 @@
 // 实验室样本数据
 
-import { Lab } from './exploration.js';
+import { Lab } from './model.js';
 
 const labs = [
   new Lab({
