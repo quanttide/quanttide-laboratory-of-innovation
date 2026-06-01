@@ -8,45 +8,46 @@
 @import url('tokens.css');
 
 body{min-height:100vh}
-header{background:var(--primary);color:#fff;padding:10px 20px}
+header{background:var(--primary);color:#fff;padding:10px 20px;display:flex;align-items:center;gap:10px}
 header h1{font-size:18px;font-weight:600}
-nav{background:var(--surface);border-bottom:1px solid var(--border);display:flex;padding:0 20px}
-nav button{padding:8px 16px;border:none;background:none;font-size:13px;font-weight:500;color:var(--text-secondary);cursor:pointer;border-bottom:2px solid transparent;transition:color .15s}
-nav button:active{transform:scale(.97)}
-nav button.active{color:var(--primary);border-bottom-color:var(--primary)}
+.back{color:#93c5fd;cursor:pointer;font-size:13px;display:none;align-items:center;gap:4px}
+.back:hover{color:#fff}
+.back.show{display:flex}
 .stats{background:var(--primary-bg);padding:6px 20px;font-size:11px;color:var(--primary);display:flex;gap:16px}
-.tab{padding:12px 20px;display:none}
-.tab.active{display:block}
+.content{padding:12px 20px}
 
-/* Directory */
-.crumbs{font-size:12px;color:var(--text-muted);margin-bottom:8px}
-.crumbs span{cursor:pointer;color:var(--primary-light)}
-.crumbs span:hover{text-decoration:underline}
+/* === Level 0: Directory === */
+#dir{display:block}
+#dir.hide{display:none}
 .filters{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
 .filters select,.filters input{padding:4px 8px;font-size:13px}
 .filters input{flex:1;min-width:160px;max-width:280px}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
+.card{padding:12px}
 .card-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px}
 .card-name{font-size:14px;font-weight:600}
 .card-desc{font-size:11px;color:var(--text-secondary);margin-bottom:6px}
-.dtag{background:var(--primary-bg);color:var(--primary);font-size:10px;padding:1px 5px;border-radius:3px}
-.poc-list{display:flex;flex-wrap:wrap;gap:3px}
-.poc-chip{display:inline-flex;align-items:center;gap:2px;padding:2px 6px;font-size:10px;background:var(--bg);border:1px solid var(--border);border-radius:3px;cursor:pointer;transition:all .12s}
-.poc-chip:active{transform:scale(.95)}
-.poc-chip.done{background:var(--success-bg);border-color:#bbf7d0;color:#166534}
-.poc-chip:hover{border-color:var(--primary-light)}
-.card-foot{display:flex;justify-content:space-between;align-items:center;padding-top:6px;margin:8px -12px -12px;padding:6px 12px;background:var(--bg);border-top:1px solid var(--border);font-size:11px}
-.card-foot a{color:var(--primary-light);text-decoration:none}
+.dt{background:var(--primary-bg);color:var(--primary);font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px}
+.list{display:flex;flex-direction:column;gap:3px;margin-bottom:6px}
+.li-row{padding:3px 6px;border-radius:3px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-size:12px;transition:background .1s}
+.li-row:hover{background:var(--primary-bg)}
+.li-row:active{transform:scale(.98)}
+.li-row .lb{display:flex;align-items:center;gap:4px}
+.li-row .lb .s{display:inline-block;width:6px;height:6px;border-radius:50%}
+.li-row .lb .s.ok{background:var(--success)}
+.li-row .lb .s.wip{background:var(--warning)}
+.li-row .meta{color:var(--text-muted);font-size:10px}
 .empty{text-align:center;padding:40px;color:var(--text-muted);font-size:13px;grid-column:1/-1}
 
-/* Workbench */
-.wb-header{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap}
-.wb-header .bc{font-size:12px;color:var(--text-muted)}
-.wb-header .bc span{cursor:pointer;color:var(--primary-light)}
-.wb-header .bc span:hover{text-decoration:underline}
-.wb-header h2{font-size:16px;font-weight:600}
+/* === Level 1: Workbench === */
+#wb{display:none}
+#wb.show{display:block}
+.crumbs{font-size:12px;color:var(--text-muted);margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.crumbs a{color:var(--primary-light);cursor:pointer;text-decoration:none}
+.crumbs a:hover{text-decoration:underline}
+.wb-title{font-size:18px;font-weight:700;margin-bottom:12px}
 .flow{display:flex;gap:12px;align-items:flex-start}
-.flow-side{width:280px;flex-shrink:0}
+.flow-side{width:260px;flex-shrink:0}
 .flow-side .fld{margin-bottom:8px}
 .flow-side label{display:block;font-size:11px;font-weight:500;color:var(--text-secondary);margin-bottom:2px}
 .flow-side input,.flow-side textarea,.flow-side select{width:100%;padding:4px 8px;font-size:13px}
@@ -60,12 +61,12 @@ nav button.active{color:var(--primary);border-bottom-color:var(--primary)}
 .sc input[type=range]{flex:1;height:3px;-webkit-appearance:none;background:var(--border);border-radius:2px}
 .sc input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;border-radius:50%;background:var(--primary-light);cursor:pointer;border:2px solid #fff}
 .sv{font-size:14px;font-weight:600;color:var(--primary-light);min-width:16px;text-align:center}
-.wi{width:44px;text-align:center;padding:2px 4px;font-size:12px}
-.total-big{font-size:24px;font-weight:700;color:var(--primary);text-align:center;padding:4px 0}
-.cg{display:flex;gap:8px;margin:10px 0}
-.cg label{display:flex;align-items:center;gap:4px;padding:4px 10px;border:1px solid var(--border);border-radius:4px;cursor:pointer;font-size:13px;transition:all .12s}
-.cg label:active{transform:scale(.97)}
-.cg label:has(input:checked){border-color:var(--primary-light);background:var(--primary-bg)}
+.wi{width:40px;text-align:center;padding:2px;font-size:12px}
+.tb{font-size:24px;font-weight:700;color:var(--primary);text-align:center;padding:4px 0}
+.rg{display:flex;gap:8px;margin:10px 0}
+.rg label{display:flex;align-items:center;gap:4px;padding:4px 10px;border:1px solid var(--border);border-radius:4px;cursor:pointer;font-size:13px;transition:all .12s}
+.rg label:active{transform:scale(.97)}
+.rg label:has(input:checked){border-color:var(--primary-light);background:var(--primary-bg)}
 .hl{list-style:none}
 .hl li{padding:4px 0;border-bottom:1px solid var(--border);font-size:13px;display:flex;gap:8px}
 .hl .ht{color:var(--text-muted);font-size:11px;min-width:40px}
@@ -74,139 +75,171 @@ nav button.active{color:var(--primary);border-bottom-color:var(--primary)}
 </style>
 </head>
 <body>
-<header><h1>创新实验室</h1></header>
-<nav id="nav">
-  <button class="active" data-v="dir">实验室</button>
-  <button data-v="wb">探索</button>
-</nav>
-<div class="tab active" id="dir"></div>
-<div class="tab" id="wb"></div>
+
+<header>
+  <span class="back" id="backBtn" onclick="goBack()">← 返回</span>
+  <h1 id="pageTitle">创新实验室</h1>
+</header>
+
+<div id="dir">
+  <div class="stats" id="dirStats"></div>
+  <div class="content">
+    <div class="filters">
+      <select id="fd"><option value="">全部领域</option></select>
+      <input id="fq" placeholder="搜索实验室或 PoC...">
+    </div>
+    <div class="grid" id="grid"></div>
+  </div>
+</div>
+
+<div id="wb">
+  <div class="content">
+    <div class="crumbs"><a id="crumbDir">实验室</a> / <span id="crumbLab"></span> / <span id="crumbPoc"></span></div>
+    <div class="wb-title" id="wbTitle"></div>
+    <div class="flow">
+      <div class="flow-side">
+        <div class="fld"><label>核心假设</label><input id="hyp" placeholder="例：用户愿意为 XX 付费"></div>
+        <div class="fld"><label>验证方法</label><select id="met"><option>实验</option><option>原型</option><option>调研</option></select></div>
+        <div class="fld"><label>输入条件</label><textarea id="inp" rows="2" placeholder="所需资源"></textarea></div>
+        <div class="fld"><label>预期输出</label><textarea id="out" rows="2" placeholder="交付物"></textarea></div>
+        <button class="btn btn-primary" onclick="aiFill()" style="width:100%">AI 辅助生成</button>
+      </div>
+      <div class="flow-main">
+        <div class="sc-card">
+          <table><thead><tr><th>维度</th><th>评分</th><th>权重</th><th>得分</th></tr></thead><tbody id="ev"></tbody></table>
+          <div class="tb" id="tt">3.00</div>
+          <div class="text-muted" style="text-align:center;font-size:11px">综合 / 5</div>
+        </div>
+        <div class="rg">
+          <label><input type="radio" name="cc" value="adopt"> 采纳</label>
+          <label><input type="radio" name="cc" value="adjust"> 调整</label>
+          <label><input type="radio" name="cc" value="abandon"> 放弃</label>
+        </div>
+        <textarea id="why" rows="2" style="width:100%;margin-bottom:8px" placeholder="决策理由"></textarea>
+        <button class="btn btn-primary" onclick="saveWb()">记录结论</button>
+        <hr style="margin:12px 0;border:none;border-top:1px solid var(--border)">
+        <h3 style="font-size:13px;font-weight:600;margin-bottom:6px;color:var(--text-secondary)">探索记录</h3>
+        <ul class="hl" id="hl"></ul>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
-const LABS = [
-  {id:'human',name:'人力资源',domain:'人力资源',status:'active',
-   pocs:[{id:'p01',name:'招聘筛选网关',status:'done',logs:[]}]},
-  {id:'org',name:'组织管理',domain:'组织管理',status:'active',
-   pocs:[{id:'p03',name:'职能目录',status:'done',logs:[]}]},
-  {id:'exec',name:'执行管理',domain:'执行管理',status:'active',
-   pocs:[{id:'p04',name:'秘书处任务分诊',status:'done',logs:[]},{id:'p05',name:'技术职能协作循环',status:'done',logs:[]}]},
-  {id:'company',name:'业务实体',domain:'业务实体',status:'active',
-   pocs:[{id:'p06',name:'章程多维资产视图',status:'done',logs:[]}]},
-  {id:'innov',name:'创新',domain:'创新',status:'active',
-   pocs:[{id:'p07',name:'概念验证探索框架',status:'done',logs:[]},{id:'p09',name:'实验室目录',status:'done',logs:[]}]},
-  {id:'game',name:'游戏研发',domain:'游戏',status:'active',
-   pocs:[{id:'g01',name:'六角格地图',status:'done',logs:[]},{id:'g02',name:'单位移动',status:'done',logs:[]},{id:'g03',name:'地形系统',status:'done',logs:[]},{id:'g04',name:'回合流程',status:'done',logs:[]}]},
-  {id:'default',name:'创始人',domain:'创始人',status:'active',
-   pocs:[]}
+// ---- Data ----
+const DATA = [
+  {id:'human',name:'人力资源',domain:'人力资源',pocs:[{id:'p01',name:'招聘筛选网关',logs:[]}]},
+  {id:'org',name:'组织管理',domain:'组织管理',pocs:[{id:'p03',name:'职能目录',logs:[]}]},
+  {id:'exec',name:'执行管理',domain:'执行管理',pocs:[{id:'p04',name:'秘书处任务分诊',logs:[]},{id:'p05',name:'技术职能协作循环',logs:[]}]},
+  {id:'company',name:'业务实体',domain:'业务实体',pocs:[{id:'p06',name:'章程多维资产视图',logs:[]}]},
+  {id:'innov',name:'创新',domain:'创新',pocs:[{id:'p07',name:'概念验证探索框架',logs:[]},{id:'p09',name:'实验室目录',logs:[]}]},
+  {id:'game',name:'游戏研发',domain:'游戏',pocs:[{id:'g01',name:'六角格地图',logs:[]},{id:'g02',name:'单位移动',logs:[]},{id:'g03',name:'地形系统',logs:[]},{id:'g04',name:'回合流程',logs:[]}]},
+  {id:'default',name:'创始人',domain:'创始人',pocs:[]}
 ];
+// Restore logs
+const raw = JSON.parse(sessionStorage.getItem('il')||'[]');
+raw.forEach(r=>{DATA.forEach(l=>l.pocs.forEach(p=>{if(p.id===r.p) p.logs.push(r);}));});
 
-// Load logs from sessionStorage into labs
-(function loadLogs(){
-  const raw = JSON.parse(sessionStorage.getItem('innov_logs')||'[]');
-  raw.forEach(r=>{
-    LABS.forEach(l=>l.pocs.forEach(p=>{
-      if(p.id===r.pocId) p.logs.push(r);
-    }));
-  });
-})();
+// ---- Navigation ----
+let stack = []; // ['dir'] or ['wb', labId, pocId]
 
-let ctx = {labId:null,pocId:null};
-
-function switchTab(v,labId,pocId){
-  ctx={labId:labId||ctx.labId,pocId:pocId||ctx.pocId};
-  document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.v===v));
-  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.id===v));
-  if(v==='dir')renderDir();
-  if(v==='wb')renderWb();
+function showDir() {
+  document.getElementById('dir').style.display='block';
+  document.getElementById('wb').classList.remove('show');
+  document.getElementById('backBtn').classList.remove('show');
+  document.getElementById('pageTitle').textContent='创新实验室';
+  renderDir();
 }
 
-function renderDir(){
-  const e=document.getElementById('dir');
-  const t=LABS.length,a=LABS.filter(l=>l.status==='active').length,p=LABS.reduce((s,l)=>s+l.pocs.length,0);
-  const allLogs=LABS.reduce((s,l)=>s+l.pocs.reduce((s2,p)=>s2+p.logs.length,0),0);
-  e.innerHTML=`<div class="stats"><span><strong>${t}</strong> 实验室</span><span><strong>${a}</strong> 活跃</span><span><strong>${p}</strong> PoC</span><span><strong>${allLogs}</strong> 次探索</span></div>
-  <div class="filters"><select id="fd"><option value="">全部领域</option>${[...new Set(LABS.map(l=>l.domain))].map(d=>`<option>${d}</option>`).join('')}</select>
-  <select id="fs"><option value="">全部状态</option><option value="active">活跃</option></select>
-  <input id="fq" placeholder="搜索..."></div><div class="grid" id="g"></div>`;
-  ['fd','fs'].forEach(id=>document.getElementById(id).onchange=renderGrid);
-  document.getElementById('fq').oninput=renderGrid;
+function showWb(labId, pocId) {
+  const lab=DATA.find(l=>l.id===labId); if(!lab)return;
+  const poc=lab.pocs.find(p=>p.id===pocId); if(!poc)return;
+  document.getElementById('dir').style.display='none';
+  document.getElementById('wb').classList.add('show');
+  document.getElementById('backBtn').classList.add('show');
+  document.getElementById('pageTitle').textContent=poc.name+' · '+lab.name;
+  document.getElementById('crumbDir').onclick=()=>goBack();
+  document.getElementById('crumbLab').textContent=lab.name;
+  document.getElementById('crumbPoc').textContent=poc.name;
+  document.getElementById('wbTitle').textContent=poc.name+' · PoC '+poc.id;
+  renderWb(lab,poc);
+}
+
+function goBack() {
+  if(stack[0]==='wb'){showDir();stack=['dir'];}
+}
+
+// ---- Directory ----
+function renderDir() {
+  const domains=[...new Set(DATA.map(l=>l.domain))];
+  const sel=document.getElementById('fd');
+  sel.innerHTML='<option value="">全部领域</option>'+domains.map(d=>`<option>${d}</option>`).join('');
+
+  const total=DATA.length, pocCount=DATA.reduce((s,l)=>s+l.pocs.length,0), logCount=raw.length;
+  document.getElementById('dirStats').innerHTML=`<span><strong>${total}</strong> 实验室</span><span><strong>${pocCount}</strong> PoC</span><span><strong>${logCount}</strong> 次探索</span>`;
+
   renderGrid();
+  document.getElementById('fd').onchange=renderGrid;
+  document.getElementById('fq').oninput=renderGrid;
 }
 
-function renderGrid(){
-  const d=document.getElementById('fd').value,s=document.getElementById('fs').value,q=document.getElementById('fq').value.toLowerCase();
-  let f=LABS.filter(l=>{if(d&&l.domain!=d)return 0;if(s&&l.status!=s)return 0;if(q){let m=l.name.includes(q)||l.domain.includes(q)||l.pocs.some(p=>p.name.includes(q));if(!m)return 0}return 1});
-  const grid=document.getElementById('g');
+function renderGrid() {
+  const d=document.getElementById('fd').value, q=document.getElementById('fq').value.toLowerCase();
+  let f=DATA.filter(l=>{if(d&&l.domain!=d)return 0;if(q){let m=l.name.includes(q)||l.domain.includes(q)||l.pocs.some(p=>p.name.includes(q));if(!m)return 0}return 1});
+  const grid=document.getElementById('grid');
   if(!f.length){grid.innerHTML='<div class="empty">无匹配</div>';return}
-  grid.innerHTML=f.map(l=>`<div class="card"><div class="card-head"><div><span class="card-name">${l.name}</span><span class="dtag">${l.domain}</span></div><span class="badge ${l.status}">${l.status==='active'?'活跃':'已归档'}</span></div><div class="poc-list">${l.status==='active'?l.pocs.map(p=>{
-    const last = p.logs.length?p.logs[p.logs.length-1]:null;
-    return `<span class="poc-chip ${p.status}" onclick="switchTab('wb','${l.id}','${p.id}')">${p.status==='done'?'✓':'○'} ${p.name}${last?` · ${last.conclusion?(last.conclusion==='adopt'?'采纳':last.conclusion==='adjust'?'调整':'放弃'):'待决策'}`:''}</span>`;
-  }).join(''):`<span class="text-muted" style="font-size:11px">已归档</span>`}</div><div class="card-foot"><span class="text-muted">${l.pocs.filter(p=>p.logs.length).reduce((s,p)=>s+p.logs.length,0)} 次探索</span><a href="https://github.com/quanttide/quanttide-laboratory-of-${l.id}" target="_blank">${l.id}</a></div></div>`).join('');
-  // Re-bind click handlers for poc-chip (since they're set via onclick attr, they work)
+  grid.innerHTML=f.map(l=>`<div class="card"><div class="card-head"><div><span class="card-name">${l.name}</span><span class="dt">${l.domain}</span></div></div><div class="list">${l.pocs.length?l.pocs.map(p=>{
+    const last=p.logs.length?p.logs[p.logs.length-1]:null;
+    const st=last?'ok':'wip';
+    const la=last?{adopt:'采纳',adjust:'调整',abandon:'放弃'}[last.cc]||'进行中':'待探索';
+    return `<div class="li-row" onclick="enterWb('${l.id}','${p.id}')"><span class="lb"><span class="s ${st}"></span>${p.name}</span><span class="meta">${last?last.ts.substr(5):''} · ${la}</span></div>`;
+  }).join(''):'<span class="text-muted" style="font-size:11px;padding:2px 6px">暂无 PoC</span>'}</div></div>`).join('');
 }
 
-function renderWb(){
-  const lab=LABS.find(l=>l.id===ctx.labId)||LABS[0];
-  const poc=lab.pocs.find(p=>p.id===ctx.pocId)||lab.pocs[0];
-  if(!ctx.labId){ctx.labId=lab.id;ctx.pocId=poc.id;}
-  const last = poc.logs.length?poc.logs[poc.logs.length-1]:null;
-  const e=document.getElementById('wb');
-  e.innerHTML=`<div class="wb-header"><div class="bc"><span onclick="switchTab('dir')">实验室</span> / ${lab.name} / ${poc.name}</div><h2>${poc.name} · PoC ${poc.id}</h2></div>
-  <div class="flow">
-    <div class="flow-side">
-      <div class="fld"><label>核心假设</label><input id="hyp" placeholder="例：用户愿意为 XX 付费" value="${last?last.hypothesis:''}"></div>
-      <div class="fld"><label>验证方法</label><select id="met"><option ${!last||last.method==='实验'?'selected':''}>实验</option><option ${last&&last.method==='原型'?'selected':''}>原型</option><option ${last&&last.method==='调研'?'selected':''}>调研</option></select></div>
-      <div class="fld"><label>输入条件</label><textarea id="inp" rows="2" placeholder="所需资源">${last?last.input:''}</textarea></div>
-      <div class="fld"><label>预期输出</label><textarea id="out" rows="2" placeholder="交付物">${last?last.output:''}</textarea></div>
-      <button class="btn btn-primary" onclick="aiFill()" style="width:100%">AI 辅助生成</button>
-    </div>
-    <div class="flow-main">
-      <div class="sc-card"><table><thead><tr><th>维度</th><th>评分</th><th>权重</th><th>得分</th></tr></thead><tbody id="ev"></tbody></table>
-      <div class="total-big" id="tt">3.00</div><div class="text-muted" style="text-align:center;font-size:11px">综合 / 5</div></div>
-      <div class="cg"><label><input type="radio" name="cc" value="adopt" ${last&&last.conclusion==='adopt'?'checked':''}> 采纳</label><label><input type="radio" name="cc" value="adjust" ${last&&last.conclusion==='adjust'?'checked':''}> 调整</label><label><input type="radio" name="cc" value="abandon" ${last&&last.conclusion==='abandon'?'checked':''}> 放弃</label></div>
-      <textarea id="why" rows="2" style="width:100%;margin-bottom:8px" placeholder="决策理由">${last?last.reason:''}</textarea>
-      <button class="btn btn-primary" onclick="save()">记录结论</button>
-      <hr style="margin:12px 0;border:none;border-top:1px solid var(--border)">
-      <h3 style="font-size:13px;font-weight:600;margin-bottom:6px;color:var(--text-secondary)">探索记录 (${poc.logs.length})</h3>
-      <ul class="hl" id="hl"></ul>
-    </div>
-  </div>`;
-  ['可行性','成本','风险','收益'].forEach((n,i)=>{
-    const k=['feasibility','cost','risk','benefit'][i];
-    const v=last&&last.scores?last.scores[k]||3:3;
-    document.getElementById('ev').innerHTML+=`<tr><td>${n}</td><td><div class="sc"><input type="range" min="1" max="5" value="${v}" class="es" data-k="${k}"><span class="sv" id="${k}V">${v}</span></div></td><td><input class="wi" value="25" min="0" max="100" data-k="${k}"> %</td><td><span class="sv" id="${k}S" style="font-size:13px">0.75</span></td></tr>`;
+function enterWb(labId,pocId){stack=['wb',labId,pocId];showWb(labId,pocId);}
+
+// ---- Workbench ----
+function renderWb(lab,poc){
+  const last=poc.logs.length?poc.logs[poc.logs.length-1]:null;
+  document.getElementById('hyp').value=last?last.h:'';
+
+  // eval table
+  document.getElementById('ev').innerHTML='';
+  [['可行性','feasibility'],['成本','cost'],['风险','risk'],['收益','benefit']].forEach(([nl,k])=>{
+    const v=last&&last.sc?last.sc[k]||3:3;
+    document.getElementById('ev').innerHTML+=`<tr><td>${nl}</td><td><div class="sc"><input type="range" min="1" max="5" value="${v}" class="es" data-k="${k}"><span class="sv" id="${k}V">${v}</span></div></td><td><input class="wi" value="25" min="0" max="100" data-k="${k}"> %</td><td><span class="sv" id="${k}S" style="font-size:13px">0.75</span></td></tr>`;
   });
-  document.querySelectorAll('.es').forEach(el=>el.oninput=function(){document.getElementById(this.dataset.k+'V').textContent=this.value;up(this.dataset.k);calc()});
-  document.querySelectorAll('.wi').forEach(el=>el.oninput=function(){up(this.dataset.k);calc()});
-  renderHL(poc);calc();
-}
-
-function up(k){const s=document.querySelector(`.es[data-k="${k}"]`),w=document.querySelector(`.wi[data-k="${k}"]`),se=document.getElementById(k+'S');if(s&&w&&se)se.textContent=((s.value/5)*(w.value||0)/100).toFixed(2)}
-function calc(){let t=0;document.querySelectorAll('.wi').forEach(w=>{const s=document.querySelector(`.es[data-k="${w.dataset.k}"]`);if(s)t+=(s.value/5)*(w.value||0)/100});document.getElementById('tt').textContent=(t*5).toFixed(2)}
-function aiFill(){
-  document.getElementById('hyp').value='用户愿意为个性化推荐付费';
-  document.getElementById('met').value='原型';
-  document.getElementById('inp').value='目标用户画像、竞品分析';
-  document.getElementById('out').value='可交互原型、测试报告';
-}
-function save(){
-  const h=document.getElementById('hyp').value.trim();if(!h)return;
-  const c=document.querySelector('input[name="cc"]:checked');
-  const scores={};document.querySelectorAll('.es').forEach(el=>scores[el.dataset.k]=parseInt(el.value));
-  const d=new Date(),ts=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
-  const lab=LABS.find(l=>l.id===ctx.labId);const poc=lab.pocs.find(p=>p.id===ctx.pocId);
-  const entry={time:ts,pocId:poc.id,hypothesis:h,method:document.getElementById('met').value,input:document.getElementById('inp').value,output:document.getElementById('out').value,conclusion:c?c.value:'',reason:document.getElementById('why').value.trim(),scores};
-  poc.logs.push(entry);
-  const all=[];LABS.forEach(l=>l.pocs.forEach(p=>p.logs.forEach(r=>all.push(r))));
-  sessionStorage.setItem('innov_logs',JSON.stringify(all));
+  document.querySelectorAll('.es').forEach(el=>el.oninput=function(){document.getElementById(this.dataset.k+'V').textContent=this.value;upS(this.dataset.k);calcT()});
+  document.querySelectorAll('.wi').forEach(el=>el.oninput=function(){upS(this.dataset.k);calcT()});
+  calcT();
   renderHL(poc);
 }
+
+function upS(k){const s=document.querySelector(`.es[data-k="${k}"]`),w=document.querySelector(`.wi[data-k="${k}"]`),se=document.getElementById(k+'S');if(s&&w&&se)se.textContent=((s.value/5)*(w.value||0)/100).toFixed(2)}
+function calcT(){let t=0;document.querySelectorAll('.wi').forEach(w=>{const s=document.querySelector(`.es[data-k="${w.dataset.k}"]`);if(s)t+=(s.value/5)*(w.value||0)/100});document.getElementById('tt').textContent=(t*5).toFixed(2)}
+function aiFill(){document.getElementById('hyp').value='用户愿意为个性化推荐付费';document.getElementById('met').value='原型';document.getElementById('inp').value='目标用户画像、竞品分析';document.getElementById('out').value='可交互原型、测试报告';}
+
+function saveWb(){
+  const h=document.getElementById('hyp').value.trim();if(!h)return;
+  const cc=document.querySelector('input[name="cc"]:checked');
+  const sc={};document.querySelectorAll('.es').forEach(el=>sc[el.dataset.k]=parseInt(el.value));
+  const d=new Date(),ts=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  const lab=DATA.find(l=>l.id===stack[1]);const poc=lab.pocs.find(p=>p.id===stack[2]);
+  const entry={ts,p:poc.id,h,cc:cc?cc.value:'',why:document.getElementById('why').value.trim(),sc};
+  poc.logs.push(entry);raw.push(entry);
+  sessionStorage.setItem('il',JSON.stringify(raw));
+  renderHL(poc);
+}
+
 function renderHL(poc){
   const el=document.getElementById('hl');if(!el)return;
-  const L={adopt:'采纳',adjust:'调整',abandon:'放弃'};
-  el.innerHTML=poc.logs.length?poc.logs.slice().reverse().map(l=>`<li><span class="ht">${l.time}</span><span>${l.hypothesis}</span>${l.conclusion?`<span style="color:var(--primary-light)">→ ${L[l.conclusion]}</span>`:''}</li>`).join(''):'<li class="text-muted" style="border:none">尚未探索</li>';
+  const la={adopt:'采纳',adjust:'调整',abandon:'放弃'};
+  el.innerHTML=poc.logs.length?poc.logs.slice().reverse().map(l=>`<li><span class="ht">${l.ts}</span><span>${l.h}</span>${l.cc?`<span style="color:var(--primary-light)">→ ${la[l.cc]}</span>`:''}</li>`).join(''):'<li class="text-muted" style="border:none">尚无探索记录</li>';
 }
-document.querySelectorAll('#nav button').forEach(b=>b.onclick=()=>switchTab(b.dataset.v));
-renderDir();
+
+// ---- Init ----
+showDir();
+stack=['dir'];
 </script>
 </body>
 </html>
