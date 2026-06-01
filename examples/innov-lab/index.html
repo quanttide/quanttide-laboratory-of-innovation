@@ -7,160 +7,181 @@
 <style>
 @import url('tokens.css');
 
-/* Layout */
-header{background:var(--primary);color:#fff;padding:var(--space-3) var(--space-5);display:flex;align-items:center;justify-content:space-between}
-header .sub{font-size:var(--fs-5);opacity:.7}
-nav{background:var(--surface);border-bottom:1px solid var(--border);display:flex;padding:0 var(--space-5)}
-nav button{padding:var(--space-2) var(--space-4);border:none;background:none;font-size:var(--fs-4);font-weight:500;color:var(--text-secondary);cursor:pointer;border-bottom:2px solid transparent;transition:color .15s}
+body{min-height:100vh}
+header{background:var(--primary);color:#fff;padding:10px 20px}
+header h1{font-size:18px;font-weight:600}
+nav{background:var(--surface);border-bottom:1px solid var(--border);display:flex;padding:0 20px}
+nav button{padding:8px 16px;border:none;background:none;font-size:13px;font-weight:500;color:var(--text-secondary);cursor:pointer;border-bottom:2px solid transparent;transition:color .15s}
 nav button:active{transform:scale(.97)}
 nav button.active{color:var(--primary);border-bottom-color:var(--primary)}
-.stats-bar{background:var(--primary-surface);padding:var(--space-2) var(--space-5);font-size:var(--fs-5);color:var(--primary);display:flex;gap:var(--space-5);flex-wrap:wrap}
-.tab{display:none;padding:var(--space-4) var(--space-5)}
+.stats{background:var(--primary-bg);padding:6px 20px;font-size:11px;color:var(--primary);display:flex;gap:16px}
+.tab{padding:12px 20px;display:none}
 .tab.active{display:block}
 
 /* Directory */
-.filters{display:flex;gap:var(--space-2);margin-bottom:var(--space-3);flex-wrap:wrap}
-.filters select,.filters input{padding:4px 8px;font-size:var(--fs-4)}
-.filters input{flex:1;min-width:180px;max-width:320px}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:var(--space-3)}
-.card-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:var(--space-1)}
-.card-name{font-size:var(--fs-3);font-weight:var(--fw-2)}
-.card-desc{font-size:var(--fs-5);color:var(--text-secondary);margin-bottom:var(--space-2)}
-.card-tags{display:flex;flex-wrap:wrap;gap:2px;margin-bottom:var(--space-2)}
-.tag{display:inline-flex;align-items:center;gap:2px;padding:1px 5px;font-size:10px;background:var(--bg);border:1px solid var(--border);border-radius:3px;color:var(--text-secondary)}
-.tag.done{background:var(--success-bg);border-color:#bbf7d0;color:#166534}
-.domain-tag{background:var(--primary-bg);color:var(--primary);font-size:10px;padding:1px 5px;border-radius:3px;margin-left:var(--space-1)}
-.card-foot{display:flex;justify-content:space-between;align-items:center;padding-top:var(--space-2);margin:0 calc(-1 * var(--space-3)) calc(-1 * var(--space-3));padding:var(--space-2) var(--space-3);background:var(--bg);border-top:1px solid var(--border);font-size:var(--fs-5)}
+.crumbs{font-size:12px;color:var(--text-muted);margin-bottom:8px}
+.crumbs span{cursor:pointer;color:var(--primary-light)}
+.crumbs span:hover{text-decoration:underline}
+.filters{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.filters select,.filters input{padding:4px 8px;font-size:13px}
+.filters input{flex:1;min-width:160px;max-width:280px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
+.card-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px}
+.card-name{font-size:14px;font-weight:600}
+.card-desc{font-size:11px;color:var(--text-secondary);margin-bottom:6px}
+.dtag{background:var(--primary-bg);color:var(--primary);font-size:10px;padding:1px 5px;border-radius:3px}
+.poc-list{display:flex;flex-wrap:wrap;gap:3px}
+.poc-chip{display:inline-flex;align-items:center;gap:2px;padding:2px 6px;font-size:10px;background:var(--bg);border:1px solid var(--border);border-radius:3px;cursor:pointer;transition:all .12s}
+.poc-chip:active{transform:scale(.95)}
+.poc-chip.done{background:var(--success-bg);border-color:#bbf7d0;color:#166534}
+.poc-chip:hover{border-color:var(--primary-light)}
+.card-foot{display:flex;justify-content:space-between;align-items:center;padding-top:6px;margin:8px -12px -12px;padding:6px 12px;background:var(--bg);border-top:1px solid var(--border);font-size:11px}
 .card-foot a{color:var(--primary-light);text-decoration:none}
-.card-foot a:hover{text-decoration:underline}
-.explore-btn{padding:2px 10px;border:1px solid var(--primary-light);border-radius:var(--radius-sm);background:transparent;color:var(--primary-light);font-size:var(--fs-5);cursor:pointer;transition:background .15s}
-.explore-btn:hover{background:var(--primary-bg)}
-.explore-btn:active{transform:scale(.97)}
+.empty{text-align:center;padding:40px;color:var(--text-muted);font-size:13px;grid-column:1/-1}
 
-/* Explore */
-.flow{display:flex;gap:var(--space-4);align-items:flex-start}
-.flow-side{width:300px;flex-shrink:0}
-.flow-side .field{margin-bottom:var(--space-2)}
-.flow-side label{display:block;font-size:var(--fs-5);font-weight:500;color:var(--text-secondary);margin-bottom:2px}
-.flow-side input,.flow-side textarea,.flow-side select{width:100%;padding:4px 8px;font-size:var(--fs-4)}
-.flow-side textarea{resize:vertical;min-height:44px}
+/* Workbench */
+.wb-header{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.wb-header .bc{font-size:12px;color:var(--text-muted)}
+.wb-header .bc span{cursor:pointer;color:var(--primary-light)}
+.wb-header .bc span:hover{text-decoration:underline}
+.wb-header h2{font-size:16px;font-weight:600}
+.flow{display:flex;gap:12px;align-items:flex-start}
+.flow-side{width:280px;flex-shrink:0}
+.flow-side .fld{margin-bottom:8px}
+.flow-side label{display:block;font-size:11px;font-weight:500;color:var(--text-secondary);margin-bottom:2px}
+.flow-side input,.flow-side textarea,.flow-side select{width:100%;padding:4px 8px;font-size:13px}
+.flow-side textarea{resize:vertical;min-height:36px}
 .flow-main{flex:1}
-.score-card{padding:var(--space-3);margin-bottom:var(--space-3)}
-.score-card table{width:100%;border-collapse:collapse}
-.score-card th{text-align:left;font-size:var(--fs-5);font-weight:600;color:var(--text-secondary);padding:4px 6px;border-bottom:1px solid var(--border)}
-.score-card td{padding:6px;border-bottom:1px solid var(--border);font-size:var(--fs-4)}
-.slider-cell{display:flex;align-items:center;gap:var(--space-2)}
-.slider-cell input[type=range]{flex:1;height:4px;-webkit-appearance:none;background:var(--border);border-radius:2px}
-.slider-cell input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--primary-light);cursor:pointer;border:2px solid #fff}
-.slider-val{font-size:var(--fs-3);font-weight:var(--fw-2);color:var(--primary-light);min-width:18px;text-align:center}
-.weight-inp{width:48px;text-align:center;padding:2px 4px;font-size:var(--fs-5)}
-.total-big{font-size:26px;font-weight:var(--fw-1);color:var(--primary);text-align:center;padding:var(--space-1) 0}
-.conclusion-group{display:flex;gap:var(--space-2);margin:var(--space-3) 0}
-.conclusion-group label{display:flex;align-items:center;gap:4px;padding:4px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;font-size:var(--fs-4);transition:all .15s}
-.conclusion-group label:active{transform:scale(.97)}
-.conclusion-group label:has(input:checked){border-color:var(--primary-light);background:var(--primary-bg)}
-.history-list{list-style:none}
-.history-list li{padding:4px 0;border-bottom:1px solid var(--border);font-size:var(--fs-4);display:flex;gap:var(--space-2)}
-.history-list .h-time{color:var(--text-muted);font-size:var(--fs-5);min-width:44px;flex-shrink:0}
-.empty{text-align:center;padding:40px 16px;color:var(--text-muted);font-size:var(--fs-4);grid-column:1/-1}
+.sc-card{padding:12px;margin-bottom:10px}
+.sc-card table{width:100%;border-collapse:collapse}
+.sc-card th{text-align:left;font-size:11px;font-weight:600;color:var(--text-secondary);padding:4px 6px;border-bottom:1px solid var(--border)}
+.sc-card td{padding:5px 6px;border-bottom:1px solid var(--border);font-size:13px}
+.sc{display:flex;align-items:center;gap:6px}
+.sc input[type=range]{flex:1;height:3px;-webkit-appearance:none;background:var(--border);border-radius:2px}
+.sc input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;border-radius:50%;background:var(--primary-light);cursor:pointer;border:2px solid #fff}
+.sv{font-size:14px;font-weight:600;color:var(--primary-light);min-width:16px;text-align:center}
+.wi{width:44px;text-align:center;padding:2px 4px;font-size:12px}
+.total-big{font-size:24px;font-weight:700;color:var(--primary);text-align:center;padding:4px 0}
+.cg{display:flex;gap:8px;margin:10px 0}
+.cg label{display:flex;align-items:center;gap:4px;padding:4px 10px;border:1px solid var(--border);border-radius:4px;cursor:pointer;font-size:13px;transition:all .12s}
+.cg label:active{transform:scale(.97)}
+.cg label:has(input:checked){border-color:var(--primary-light);background:var(--primary-bg)}
+.hl{list-style:none}
+.hl li{padding:4px 0;border-bottom:1px solid var(--border);font-size:13px;display:flex;gap:8px}
+.hl .ht{color:var(--text-muted);font-size:11px;min-width:40px}
 
-@media(max-width:700px){
-  .flow{flex-direction:column}.flow-side{width:100%}
-  .grid{grid-template-columns:1fr}
-  nav{overflow-x:auto}nav button{white-space:nowrap}
-}
+@media(max-width:640px){.flow{flex-direction:column}.flow-side{width:100%}.grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-<header>
-  <h1>创新实验室</h1>
-  <div class="sub">目录 · 探索 · 决策</div>
-</header>
+<header><h1>创新实验室</h1></header>
 <nav id="nav">
-  <button class="active" data-view="directory">实验室目录</button>
-  <button data-view="explore">探索工作台</button>
+  <button class="active" data-v="dir">实验室</button>
+  <button data-v="wb">探索</button>
 </nav>
-<div class="tab active" id="tab-directory"></div>
-<div class="tab" id="tab-explore"></div>
+<div class="tab active" id="dir"></div>
+<div class="tab" id="wb"></div>
 <script>
 const LABS = [
-  {id:'human',name:'人力资源实验室',repo:'quanttide/quanttide-laboratory-of-human-resources',domain:'人力资源',status:'active',desc:'招聘筛选、人才管理',pocs:[{id:'p01',name:'招聘筛选网关',status:'done'}]},
-  {id:'org',name:'组织管理实验室',repo:'quanttide/quanttide-laboratory-of-organization',domain:'组织管理',status:'active',desc:'职能拆解、组织设计',pocs:[{id:'p03',name:'职能目录',status:'done'}]},
-  {id:'exec',name:'执行管理实验室',repo:'quanttide/quanttide-laboratory-of-execution',domain:'执行管理',status:'active',desc:'任务分诊、技术职能协作',pocs:[{id:'p04',name:'秘书处任务分诊',status:'done'},{id:'p05',name:'技术职能协作循环',status:'done'}]},
-  {id:'company',name:'业务实体实验室',repo:'quanttide/quanttide-laboratory-of-business-entity',domain:'业务实体',status:'active',desc:'章程管理、业务实体',pocs:[{id:'p06',name:'章程多维资产视图',status:'done'}]},
-  {id:'innov',name:'创新实验室',repo:'quanttide/quanttide-laboratory-of-innovation',domain:'创新',status:'active',desc:'概念验证方法论',pocs:[{id:'p07',name:'概念验证探索框架',status:'done'},{id:'p09',name:'实验室目录',status:'done'}]},
-  {id:'game',name:'游戏研发实验室',repo:'quanttide/quanttide-laboratory-of-game-developing',domain:'游戏',status:'active',desc:'回合制战棋开发',pocs:[{id:'g01',name:'六角格地图',status:'done'},{id:'g02',name:'单位移动',status:'done'},{id:'g03',name:'地形系统',status:'done'},{id:'g04',name:'回合流程',status:'done'}]},
-  {id:'default',name:'创始人实验室',repo:'quanttide/quanttide-example-of-founder',domain:'创始人',status:'active',desc:'跨领域基础设施',pocs:[]}
+  {id:'human',name:'人力资源',domain:'人力资源',status:'active',
+   pocs:[{id:'p01',name:'招聘筛选网关',status:'done',logs:[]}]},
+  {id:'org',name:'组织管理',domain:'组织管理',status:'active',
+   pocs:[{id:'p03',name:'职能目录',status:'done',logs:[]}]},
+  {id:'exec',name:'执行管理',domain:'执行管理',status:'active',
+   pocs:[{id:'p04',name:'秘书处任务分诊',status:'done',logs:[]},{id:'p05',name:'技术职能协作循环',status:'done',logs:[]}]},
+  {id:'company',name:'业务实体',domain:'业务实体',status:'active',
+   pocs:[{id:'p06',name:'章程多维资产视图',status:'done',logs:[]}]},
+  {id:'innov',name:'创新',domain:'创新',status:'active',
+   pocs:[{id:'p07',name:'概念验证探索框架',status:'done',logs:[]},{id:'p09',name:'实验室目录',status:'done',logs:[]}]},
+  {id:'game',name:'游戏研发',domain:'游戏',status:'active',
+   pocs:[{id:'g01',name:'六角格地图',status:'done',logs:[]},{id:'g02',name:'单位移动',status:'done',logs:[]},{id:'g03',name:'地形系统',status:'done',logs:[]},{id:'g04',name:'回合流程',status:'done',logs:[]}]},
+  {id:'default',name:'创始人',domain:'创始人',status:'active',
+   pocs:[]}
 ];
-let logs = JSON.parse(sessionStorage.getItem('innov_logs')||'[]');
-const L={adopt:'采纳',adjust:'调整',abandon:'放弃'},M={done:'完成',pending:'待开始'};
 
-function dir(){
-  const e=document.getElementById('tab-directory');
+// Load logs from sessionStorage into labs
+(function loadLogs(){
+  const raw = JSON.parse(sessionStorage.getItem('innov_logs')||'[]');
+  raw.forEach(r=>{
+    LABS.forEach(l=>l.pocs.forEach(p=>{
+      if(p.id===r.pocId) p.logs.push(r);
+    }));
+  });
+})();
+
+let ctx = {labId:null,pocId:null};
+
+function switchTab(v,labId,pocId){
+  ctx={labId:labId||ctx.labId,pocId:pocId||ctx.pocId};
+  document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.v===v));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.id===v));
+  if(v==='dir')renderDir();
+  if(v==='wb')renderWb();
+}
+
+function renderDir(){
+  const e=document.getElementById('dir');
   const t=LABS.length,a=LABS.filter(l=>l.status==='active').length,p=LABS.reduce((s,l)=>s+l.pocs.length,0);
-  e.innerHTML=`<div class="stats-bar"><span><strong>${t}</strong> 实验室</span><span><strong>${a}</strong> 活跃</span><span><strong>${p}</strong> PoC</span></div>
+  const allLogs=LABS.reduce((s,l)=>s+l.pocs.reduce((s2,p)=>s2+p.logs.length,0),0);
+  e.innerHTML=`<div class="stats"><span><strong>${t}</strong> 实验室</span><span><strong>${a}</strong> 活跃</span><span><strong>${p}</strong> PoC</span><span><strong>${allLogs}</strong> 次探索</span></div>
   <div class="filters"><select id="fd"><option value="">全部领域</option>${[...new Set(LABS.map(l=>l.domain))].map(d=>`<option>${d}</option>`).join('')}</select>
-  <select id="fs"><option value="">全部状态</option><option value="active">活跃</option><option value="archived">已归档</option></select>
-  <input id="fq" placeholder="搜索实验室或 PoC..."></div><div class="grid" id="grid"></div>`;
-  ['fd','fs'].forEach(id=>document.getElementById(id).onchange=g);
-  document.getElementById('fq').oninput=g;g();
+  <select id="fs"><option value="">全部状态</option><option value="active">活跃</option></select>
+  <input id="fq" placeholder="搜索..."></div><div class="grid" id="g"></div>`;
+  ['fd','fs'].forEach(id=>document.getElementById(id).onchange=renderGrid);
+  document.getElementById('fq').oninput=renderGrid;
+  renderGrid();
 }
 
-function g(){
+function renderGrid(){
   const d=document.getElementById('fd').value,s=document.getElementById('fs').value,q=document.getElementById('fq').value.toLowerCase();
-  let f=LABS.filter(l=>{if(d&&l.domain!=d)return 0;if(s&&l.status!=s)return 0;if(q){let m=l.name.toLowerCase().includes(q)||l.desc.toLowerCase().includes(q)||l.pocs.some(p=>p.name.toLowerCase().includes(q));if(!m)return 0}return 1});
-  const grid=document.getElementById('grid');
-  if(!f.length){grid.innerHTML='<div class="empty">无匹配实验室</div>';return}
-  grid.innerHTML=f.map(l=>`<div class="card"><div class="card-head"><div><span class="card-name">${l.name}</span><span class="domain-tag">${l.domain}</span></div><span class="badge ${l.status}">${l.status==='active'?'活跃':'已归档'}</span></div><div class="card-desc">${l.desc}</div><div class="card-tags">${l.pocs.map(p=>`<span class="tag ${p.status}">${p.status==='done'?'✓':'○'} ${p.name}</span>`).join('')}</div><div class="card-foot"><span class="text-muted">${l.pocs.length} PoC</span><a href="https://github.com/${l.repo}" target="_blank">${l.repo.split('/')[1]}</a><button class="explore-btn" data-lab="${l.id}">探索</button></div></div>`).join('');
-  document.querySelectorAll('.explore-btn').forEach(b=>b.onclick=()=>switchTab('explore',b.dataset.lab));
+  let f=LABS.filter(l=>{if(d&&l.domain!=d)return 0;if(s&&l.status!=s)return 0;if(q){let m=l.name.includes(q)||l.domain.includes(q)||l.pocs.some(p=>p.name.includes(q));if(!m)return 0}return 1});
+  const grid=document.getElementById('g');
+  if(!f.length){grid.innerHTML='<div class="empty">无匹配</div>';return}
+  grid.innerHTML=f.map(l=>`<div class="card"><div class="card-head"><div><span class="card-name">${l.name}</span><span class="dtag">${l.domain}</span></div><span class="badge ${l.status}">${l.status==='active'?'活跃':'已归档'}</span></div><div class="poc-list">${l.status==='active'?l.pocs.map(p=>{
+    const last = p.logs.length?p.logs[p.logs.length-1]:null;
+    return `<span class="poc-chip ${p.status}" onclick="switchTab('wb','${l.id}','${p.id}')">${p.status==='done'?'✓':'○'} ${p.name}${last?` · ${last.conclusion?(last.conclusion==='adopt'?'采纳':last.conclusion==='adjust'?'调整':'放弃'):'待决策'}`:''}</span>`;
+  }).join(''):`<span class="text-muted" style="font-size:11px">已归档</span>`}</div><div class="card-foot"><span class="text-muted">${l.pocs.filter(p=>p.logs.length).reduce((s,p)=>s+p.logs.length,0)} 次探索</span><a href="https://github.com/quanttide/quanttide-laboratory-of-${l.id}" target="_blank">${l.id}</a></div></div>`).join('');
+  // Re-bind click handlers for poc-chip (since they're set via onclick attr, they work)
 }
 
-function switchTab(view,labId){
-  document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.view===view));
-  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.id==='tab-'+view));
-  if(view==='explore')exp(labId||LABS[0].id);
-}
-
-function exp(labId){
-  const lab=LABS.find(l=>l.id===labId)||LABS[0];
-  const e=document.getElementById('tab-explore');
-  e.innerHTML=`<div class="stats-bar">探索 <strong>${lab.name}</strong> — 假设 → 评估 → 决策</div>
+function renderWb(){
+  const lab=LABS.find(l=>l.id===ctx.labId)||LABS[0];
+  const poc=lab.pocs.find(p=>p.id===ctx.pocId)||lab.pocs[0];
+  if(!ctx.labId){ctx.labId=lab.id;ctx.pocId=poc.id;}
+  const last = poc.logs.length?poc.logs[poc.logs.length-1]:null;
+  const e=document.getElementById('wb');
+  e.innerHTML=`<div class="wb-header"><div class="bc"><span onclick="switchTab('dir')">实验室</span> / ${lab.name} / ${poc.name}</div><h2>${poc.name} · PoC ${poc.id}</h2></div>
   <div class="flow">
     <div class="flow-side">
-      <div class="field"><label>核心假设</label><input id="hyp" placeholder="例：用户愿意为 XX 付费"></div>
-      <div class="field"><label>验证方法</label><select id="met"><option>实验</option><option>原型</option><option>调研</option></select></div>
-      <div class="field"><label>输入条件</label><textarea id="inp" rows="2" placeholder="所需资源"></textarea></div>
-      <div class="field"><label>预期输出</label><textarea id="out" rows="2" placeholder="交付物"></textarea></div>
+      <div class="fld"><label>核心假设</label><input id="hyp" placeholder="例：用户愿意为 XX 付费" value="${last?last.hypothesis:''}"></div>
+      <div class="fld"><label>验证方法</label><select id="met"><option ${!last||last.method==='实验'?'selected':''}>实验</option><option ${last&&last.method==='原型'?'selected':''}>原型</option><option ${last&&last.method==='调研'?'selected':''}>调研</option></select></div>
+      <div class="fld"><label>输入条件</label><textarea id="inp" rows="2" placeholder="所需资源">${last?last.input:''}</textarea></div>
+      <div class="fld"><label>预期输出</label><textarea id="out" rows="2" placeholder="交付物">${last?last.output:''}</textarea></div>
       <button class="btn btn-primary" onclick="aiFill()" style="width:100%">AI 辅助生成</button>
     </div>
     <div class="flow-main">
-      <div class="score-card"><table><thead><tr><th>维度</th><th>评分</th><th>权重</th><th>得分</th></tr></thead><tbody id="evalb"></tbody></table>
-      <div class="total-big" id="total">3.00</div><div class="text-muted" style="text-align:center;font-size:var(--fs-5)">综合评分 / 5</div></div>
-      <div class="conclusion-group"><label><input type="radio" name="cc" value="adopt"> 采纳</label><label><input type="radio" name="cc" value="adjust"> 调整</label><label><input type="radio" name="cc" value="abandon"> 放弃</label></div>
-      <textarea id="why" rows="2" style="width:100%;margin-bottom:var(--space-2)" placeholder="决策理由"></textarea>
-      <button class="btn btn-primary" onclick="save()">添加到探索记录</button>
-      <hr style="margin:var(--space-4) 0;border:none;border-top:1px solid var(--border)">
-      <h3 style="font-size:var(--fs-3);font-weight:var(--fw-2);margin-bottom:var(--space-2);color:var(--text-secondary)">探索记录</h3>
-      <ul class="history-list" id="hlog"></ul>
+      <div class="sc-card"><table><thead><tr><th>维度</th><th>评分</th><th>权重</th><th>得分</th></tr></thead><tbody id="ev"></tbody></table>
+      <div class="total-big" id="tt">3.00</div><div class="text-muted" style="text-align:center;font-size:11px">综合 / 5</div></div>
+      <div class="cg"><label><input type="radio" name="cc" value="adopt" ${last&&last.conclusion==='adopt'?'checked':''}> 采纳</label><label><input type="radio" name="cc" value="adjust" ${last&&last.conclusion==='adjust'?'checked':''}> 调整</label><label><input type="radio" name="cc" value="abandon" ${last&&last.conclusion==='abandon'?'checked':''}> 放弃</label></div>
+      <textarea id="why" rows="2" style="width:100%;margin-bottom:8px" placeholder="决策理由">${last?last.reason:''}</textarea>
+      <button class="btn btn-primary" onclick="save()">记录结论</button>
+      <hr style="margin:12px 0;border:none;border-top:1px solid var(--border)">
+      <h3 style="font-size:13px;font-weight:600;margin-bottom:6px;color:var(--text-secondary)">探索记录 (${poc.logs.length})</h3>
+      <ul class="hl" id="hl"></ul>
     </div>
   </div>`;
   ['可行性','成本','风险','收益'].forEach((n,i)=>{
     const k=['feasibility','cost','risk','benefit'][i];
-    document.getElementById('evalb').innerHTML+=`<tr><td>${n}</td><td><div class="slider-cell"><input type="range" min="1" max="5" value="3" class="es" data-k="${k}"><span class="slider-val" id="${k}V">3</span></div></td><td><input class="weight-inp" value="25" min="0" max="100" data-k="${k}"> %</td><td><span class="slider-val" id="${k}S" style="font-size:var(--fs-4)">0.75</span></td></tr>`;
+    const v=last&&last.scores?last.scores[k]||3:3;
+    document.getElementById('ev').innerHTML+=`<tr><td>${n}</td><td><div class="sc"><input type="range" min="1" max="5" value="${v}" class="es" data-k="${k}"><span class="sv" id="${k}V">${v}</span></div></td><td><input class="wi" value="25" min="0" max="100" data-k="${k}"> %</td><td><span class="sv" id="${k}S" style="font-size:13px">0.75</span></td></tr>`;
   });
-  document.querySelectorAll('.es').forEach(el=>el.oninput=function(){document.getElementById(this.dataset.k+'V').textContent=this.value;up(this.dataset.k);tot()});
-  document.querySelectorAll('.weight-inp').forEach(el=>el.oninput=function(){up(this.dataset.k);tot()});
-  hl();tot();
+  document.querySelectorAll('.es').forEach(el=>el.oninput=function(){document.getElementById(this.dataset.k+'V').textContent=this.value;up(this.dataset.k);calc()});
+  document.querySelectorAll('.wi').forEach(el=>el.oninput=function(){up(this.dataset.k);calc()});
+  renderHL(poc);calc();
 }
 
-function up(k){
-  const s=document.querySelector(`.es[data-k="${k}"]`),w=document.querySelector(`.weight-inp[data-k="${k}"]`),se=document.getElementById(k+'S');
-  if(s&&w&&se)se.textContent=((s.value/5)*(w.value||0)/100).toFixed(2);
-}
-function tot(){
-  let t=0;document.querySelectorAll('.weight-inp').forEach(w=>{const s=document.querySelector(`.es[data-k="${w.dataset.k}"]`);if(s)t+=(s.value/5)*(w.value||0)/100});
-  document.getElementById('total').textContent=(t*5).toFixed(2);
-}
+function up(k){const s=document.querySelector(`.es[data-k="${k}"]`),w=document.querySelector(`.wi[data-k="${k}"]`),se=document.getElementById(k+'S');if(s&&w&&se)se.textContent=((s.value/5)*(w.value||0)/100).toFixed(2)}
+function calc(){let t=0;document.querySelectorAll('.wi').forEach(w=>{const s=document.querySelector(`.es[data-k="${w.dataset.k}"]`);if(s)t+=(s.value/5)*(w.value||0)/100});document.getElementById('tt').textContent=(t*5).toFixed(2)}
 function aiFill(){
   document.getElementById('hyp').value='用户愿意为个性化推荐付费';
   document.getElementById('met').value='原型';
@@ -170,16 +191,22 @@ function aiFill(){
 function save(){
   const h=document.getElementById('hyp').value.trim();if(!h)return;
   const c=document.querySelector('input[name="cc"]:checked');
+  const scores={};document.querySelectorAll('.es').forEach(el=>scores[el.dataset.k]=parseInt(el.value));
   const d=new Date(),ts=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
-  logs.push({time:ts,hypothesis:h,method:document.getElementById('met').value,conclusion:c?c.value:'',reason:document.getElementById('why').value.trim()});
-  sessionStorage.setItem('innov_logs',JSON.stringify(logs));hl();
+  const lab=LABS.find(l=>l.id===ctx.labId);const poc=lab.pocs.find(p=>p.id===ctx.pocId);
+  const entry={time:ts,pocId:poc.id,hypothesis:h,method:document.getElementById('met').value,input:document.getElementById('inp').value,output:document.getElementById('out').value,conclusion:c?c.value:'',reason:document.getElementById('why').value.trim(),scores};
+  poc.logs.push(entry);
+  const all=[];LABS.forEach(l=>l.pocs.forEach(p=>p.logs.forEach(r=>all.push(r))));
+  sessionStorage.setItem('innov_logs',JSON.stringify(all));
+  renderHL(poc);
 }
-function hl(){
-  const el=document.getElementById('hlog');if(!el)return;
-  el.innerHTML=logs.length?logs.slice().reverse().map(l=>`<li><span class="h-time">${l.time}</span><span>${l.hypothesis}</span>${l.conclusion?`<span style="color:var(--primary-light)">→ ${L[l.conclusion]||l.conclusion}</span>`:''}</li>`).join(''):'<li class="text-muted" style="border:none">暂无记录</li>';
+function renderHL(poc){
+  const el=document.getElementById('hl');if(!el)return;
+  const L={adopt:'采纳',adjust:'调整',abandon:'放弃'};
+  el.innerHTML=poc.logs.length?poc.logs.slice().reverse().map(l=>`<li><span class="ht">${l.time}</span><span>${l.hypothesis}</span>${l.conclusion?`<span style="color:var(--primary-light)">→ ${L[l.conclusion]}</span>`:''}</li>`).join(''):'<li class="text-muted" style="border:none">尚未探索</li>';
 }
-document.querySelectorAll('#nav button').forEach(b=>b.onclick=()=>switchTab(b.dataset.view));
-dir();
+document.querySelectorAll('#nav button').forEach(b=>b.onclick=()=>switchTab(b.dataset.v));
+renderDir();
 </script>
 </body>
 </html>
